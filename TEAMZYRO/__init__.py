@@ -46,7 +46,7 @@ if not TOKEN or TOKEN.strip() == "" or "Botfather" in TOKEN:
     print("👉 Please edit your config file or platform environment variables and insert a valid token from @BotFather.\n")
     sys.exit(1)
 
-FORCE_JOIN_LINK = "https://t.me/oneforall_support"  # Updated dynamically on bot startup
+FORCE_JOIN_LINK = "https://t.me/+fPjchISAGnc3OGJl"  # Updated dynamically on bot startup
 
 # --------------------- TELEGRAM BOT CONFIGURATION -----------------------
 command_filter = f.create(lambda _, __, message: message.text and message.text.startswith("/"))
