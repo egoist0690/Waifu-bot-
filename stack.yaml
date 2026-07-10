@@ -1,0 +1,16 @@
+user:
+  name: "Egoist"
+  github: "jayeshpatil8him-crypto"
+
+runtime:
+  image: "python:3.11-slim"
+
+commands:
+  package: ""
+  build:
+    - "pip install -r requirements.txt"
+  start: "python -m TEAMZYRO"
+
+repository:
+  branch: "main"
+  auto_deploy: true
