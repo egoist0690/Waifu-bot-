@@ -7,10 +7,10 @@
 # ------------------------------ IMPORTS ---------------------------------
 import logging
 import os
+import sys
 from telegram.ext import Application
 from motor.motor_asyncio import AsyncIOMotorClient
 from pyrogram import Client, filters as f
-#from pyrogram.types import x
 from aiogram import Bot, Dispatcher, types
 
 # --------------------------- LOGGING SETUP ------------------------------
@@ -38,6 +38,14 @@ from config import (
     MUSJ_JOIN, IMGBB_API_KEY, START_MEDIA, PHOTO_URL, STATS_IMG
 ) 
 
+# 🧪 CRITICAL TOKEN VALIDATION CHECK (Prevents the crash from your screenshot)
+if not TOKEN or TOKEN.strip() == "" or "Botfather" in TOKEN:
+    logging.error("❌ [CRITICAL] BOT_TOKEN IS EMPTY OR INVALID INSIDE CONFIG.PY / ENV!")
+    print("\n🦋 Ara ara~ Host engine initialization aborted!")
+    print("⚠️  The 'TOKEN' variable is missing or blank inside your configuration file.")
+    print("👉 Please edit your config file or platform environment variables and insert a valid token from @BotFather.\n")
+    sys.exit(1)
+
 FORCE_JOIN_LINK = "https://t.me/oneforall_support"  # Updated dynamically on bot startup
 
 # --------------------- TELEGRAM BOT CONFIGURATION -----------------------
@@ -46,6 +54,7 @@ application = Application.builder().token(TOKEN).build()
 ZYRO = Client("Shivu", api_id=api_id, api_hash=api_hash, bot_token=TOKEN)
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
+
 # -------------------------- DATABASE SETUP ------------------------------
 ddw = AsyncIOMotorClient(mongo_url)
 db = ddw[DB_NAME]
@@ -56,11 +65,12 @@ group_user_totals_collection = db['group_user_totalsssssss']
 top_global_groups_collection = db['top_global_groups']
 pm_users = db['total_pm_users']
 discounts_collection = db['discounts']
+
 # -------------------------- GLOBAL VARIABLES ----------------------------
 app = ZYRO
-
 x = 0000000
-# --------------------------- STRIN ---------------------------------------
+
+# --------------------------- STORAGE DICTS ------------------------------
 locks = {}
 message_counters = {}
 spam_counters = {}
@@ -87,11 +97,10 @@ from TEAMZYRO.unit.zyro_rarity import *
 async def PLOG(text: str):
     await app.send_message(
        chat_id=BOT_LOGGING,
-       text=text
+       text=f"🦋 <b>[LAB LOG]:</b>\n{text}",
+       parse_mode=enums.ParseMode.HTML
    )
 
 # ---------------------------- END OF CODE ------------------------------
 
-
 backup_ddw = AsyncIOMotorClient(backup_mongo_url)
-
