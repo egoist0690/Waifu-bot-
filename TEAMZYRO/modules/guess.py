@@ -24,30 +24,31 @@ async def guess(client: Client, message: Message):
     if await check_cooldown(user_id):
         remaining_time = await get_remaining_cooldown(user_id)
         await message.reply_text(
-            f"⚠️ You are still in cooldown. Please wait {remaining_time} seconds before using any commands."
+            f"🦋 <i>Ara ara~ You are moving a bit too fast! Please wait {remaining_time} seconds before using another command.</i>",
+            parse_mode=enums.ParseMode.HTML
         )
         return
 
     if 'name' not in last_characters.get(chat_id, {}):
-        await message.reply_text("❌ character Guess not available")
+        await message.reply_text("🦋 <i>Ara ara? There are no active targets tracked in this sector right now.</i>", parse_mode=enums.ParseMode.HTML)
         return
     
     if chat_id not in last_characters:
-        await message.reply_text("❌ character Guess not available")
+        await message.reply_text("🦋 <i>Ara ara? There are no active targets tracked in this sector right now.</i>", parse_mode=enums.ParseMode.HTML)
         return
 
     if chat_id in first_correct_guesses:
-        await message.reply_text("❌ character Guess not available")
+        await message.reply_text("🦋 <i>Too late~ This soul has already been safely guided away!</i>", parse_mode=enums.ParseMode.HTML)
         return
 
     if last_characters[chat_id].get('ranaway', False):
-        await message.reply_text("❌ THE CHARACTER HAS ALREADY RUN AWAY!")
+        await message.reply_text("🦋 <i>Oh dear, the target detected our poison incense and fled into the dark!</i>", parse_mode=enums.ParseMode.HTML)
         return 
 
     guess = ' '.join(message.command[1:]).lower() if len(message.command) > 1 else ''
     
     if "()" in guess or "&" in guess.lower():
-        await message.reply_text("Nahh You Can't use This Types of words in your guess..❌️")
+        await message.reply_text("🦋 <i>Fufufu~ You shouldn't try using those strange characters in your response!❌</i>", parse_mode=enums.ParseMode.HTML)
         return
 
     name_parts = last_characters[chat_id]['name'].lower().split()
@@ -122,28 +123,29 @@ async def guess(client: Client, message: Message):
                 'balance': 40
             })
 
-        keyboard = [[InlineKeyboardButton("See Harem", switch_inline_query_current_chat=f"collection.{user_id}")]]
+        keyboard = [[InlineKeyboardButton("🦋 View Butterfly Garden", switch_inline_query_current_chat=f"collection.{user_id}")]]
         await message.reply_text(
-            f'🌟 <b><a href="tg://user?id={user_id}">{escape(message.from_user.first_name)}</a></b>, you\'ve captured a new character! 🎊\n\n'
+            f'🦋 <b>My, my! What an absolutely exquisite execution~</b> 🌸\n'
+            f'Congratulations <b><a href="tg://user?id={user_id}">{escape(message.from_user.first_name)}</a></b>, you successfully subdued a target! 🎉\n\n'
             f'<blockquote>📛 <b>𝖭𝖠𝖬𝖤:</b> {last_characters[chat_id]["name"]}\n'
             f'🌈 <b>𝖠𝖭𝖨𝖬𝖤:</b> {last_characters[chat_id]["anime"]}\n'
             f'✨ <b>𝖱𝖠𝖱𝖨𝖳𝖸:</b> {last_characters[chat_id]["rarity"]}\n\n'
-            f'⏱️ <b>𝖳𝖨𝖬𝖤 𝖳𝖠𝖪𝖤𝖭:</b> {time_taken_str}\n'
-            f'💰 <b>𝖤𝖠𝖱𝖭𝖤𝖣:</b> +40 coins 🎉\n'
-            f'💳 <b>𝖭𝖤𝖶 𝖡𝖠𝖫𝖠𝖭𝖢𝖤:</b> {new_balance} coins\n\n'
-            f'This Character has been added to Your Harem. Use /harem to see your harem.</blockquote>',
+            f'⏱️ <b>𝖡𝖱𝖤𝖠𝖳𝖧𝖨𝖭𝖦 𝖳𝖨𝖬𝖤:</b> {time_taken_str}\n'
+            f'💰 <b>𝖤𝖠𝖱𝖭𝖤earned:</b> +40 Wisteria Coins 💴\n'
+            f'💳 <b>𝖳𝖮𝖳𝖠𝖫 𝖡𝖠𝖫𝖠𝖭𝖢𝖤:</b> {new_balance} Coins\n\n'
+            f'This character has been guided straight into your personal Corps Ledger. Use /harem to look through your garden.</blockquote>',
             parse_mode=enums.ParseMode.HTML,
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
     else:
         message_id = last_characters[chat_id].get('message_id')
         incorrect_text = (
-            "🕵️‍♂️ <b>𝖦𝖴𝖤𝖲𝖲 𝖥𝖠𝖨𝖫𝖤𝖣</b>\n\n"
-            "<blockquote>❌ Not quite right, brave guesser! Try again and unveil the mystery character!</blockquote>"
+            "🦋 <b>𝖤𝖷𝖤𝖢𝖴𝖳𝖨𝖮𝖭 𝖥𝖠𝖨𝖫𝖤𝖣</b> 🧪\n\n"
+            "<blockquote>Fufufu~ That answer is incorrect. Take a closer look before swinging your blade again!</blockquote>"
         )
         if message_id:
             keyboard = [
-                [InlineKeyboardButton("See Media Again", url=f"https://t.me/c/{str(chat_id)[4:]}/{message_id}")],
+                [InlineKeyboardButton("🔍 Scout Media Again", url=f"https://t.me/c/{str(chat_id)[4:]}/{message_id}")],
             ]
             await message.reply_text(
                 incorrect_text,
