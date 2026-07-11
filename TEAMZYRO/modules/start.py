@@ -44,8 +44,8 @@ async def generate_start_message(client, message):
 
     buttons = [
         [InlineKeyboardButton("🦋 Deploy To Your Squad ", url=f"https://t.me/{bot_user.username}?startgroup=true")],
-        [InlineKeyboardButton("💜 Support Mansion", url=https://t.me/+fPjchISAGnc3OGJl)], 
-        [InlineKeyboardButton("📢 Laboratory", url=https://t.me/+wjJbHQ9DQzM1OTE1)],
+        [InlineKeyboardButton("💜 Support Mansion", url="https://t.me/+fPjchISAGnc3OGJl")], 
+        [InlineKeyboardButton("📢 Laboratory", url="https://t.me/+wjJbHQ9DQzM1OTE1")],
         [InlineKeyboardButton("🧪 Training Manual", callback_data="open_help")],
         [InlineKeyboardButton("Owner", url=f"https://t.me/xeno_kakarot")],
     ]
