@@ -63,7 +63,7 @@ async def generate_group_start_message(client):
     buttons = [
         [
             InlineKeyboardButton("🦋 Summon Me", url=f"https://t.me/{bot_user.username}?startgroup=true"),
-            InlineKeyboardButton("💜 Support", url=SUPPORT_CHAT)
+            InlineKeyboardButton("💜 Support", url="https://t.me/+fPjchISAGnc3OGJl")
         ]
     ]
     return caption, buttons
