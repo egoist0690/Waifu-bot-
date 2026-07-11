@@ -47,7 +47,7 @@ async def generate_start_message(client, message):
         [InlineKeyboardButton("💜 Support Mansion", url="https://t.me/+fPjchISAGnc3OGJl")], 
         [InlineKeyboardButton("📢 Laboratory", url="https://t.me/+wjJbHQ9DQzM1OTE1")],
         [InlineKeyboardButton("🧪 Training Manual", callback_data="open_help")],
-        [InlineKeyboardButton("Owner", url=f"https://t.me/xeno_kakarot")],
+        [InlineKeyboardButton("Owner", url=f"https://t.me/EGOIST_6969")],
     ]
     
     return caption, buttons
