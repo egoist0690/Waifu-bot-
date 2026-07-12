@@ -21,6 +21,7 @@ TOKEN = os.getenv("TOKEN", "")
 BOT_LOGGING = os.getenv("BOT_LOGGING", "")
 DATABASE_ID = os.getenv("DATABASE_ID", "")
 FORCE_JOIN = os.getenv("FORCE_JOIN", "")
+CHARA_CHANNEL_ID = ""
 
 # Database configuration
 mongo_url = os.getenv("MONGO_URL", "")
