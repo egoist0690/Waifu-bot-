@@ -1,9 +1,11 @@
 import os
 import requests
+import asyncio
+import base64
 from pyrogram import Client, filters
 from pymongo import ReturnDocument
 from gridfs import GridFS
-from TEAMZYRO import application, DATABASE_ID, SUPPORT_CHAT, OWNER_ID, collection, user_collection, db, rarity_map, ZYRO, require_power, IMGBB_API_KEY, CHARA_CHANNEL_ID
+from TEAMZYRO import application, DATABASE_ID, SUPPORT_CHAT, OWNER_ID, collection, user_collection, db, rarity_map, ZYRO, require_power, CHARA_CHANNEL_ID
 
 IMGBB_API_KEY = "593edb35922f7a2c904ec752e2416d63"
 
