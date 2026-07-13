@@ -8,10 +8,12 @@
 import logging
 import os
 import sys
+import asyncio
 from telegram.ext import Application
 from motor.motor_asyncio import AsyncIOMotorClient
 from pyrogram import Client, filters as f
 from aiogram import Bot, Dispatcher, types
+from pyrogram import enums
 
 # --------------------------- LOGGING SETUP ------------------------------
 logging.basicConfig(
@@ -65,6 +67,7 @@ group_user_totals_collection = db['group_user_totalsssssss']
 top_global_groups_collection = db['top_global_groups']
 pm_users = db['total_pm_users']
 discounts_collection = db['discounts']
+redeem_collection = db["redeem_codes"]  # Redeem codes collection
 
 # -------------------------- GLOBAL VARIABLES ----------------------------
 app = ZYRO
@@ -100,6 +103,94 @@ async def PLOG(text: str):
        text=f"🦋 <b>[LAB LOG]:</b>\n{text}",
        parse_mode=enums.ParseMode.HTML
    )
+
+# ==========================================
+# DATABASE INITIALIZATION & INDEXES
+# ==========================================
+
+async def create_redeem_indexes():
+    """Create indexes for redeem codes collection for better performance."""
+    try:
+        # Index for faster lookups by code (unique)
+        await redeem_collection.create_index("code", unique=True)
+        # Index for checking active status
+        await redeem_collection.create_index("is_active")
+        # Index for creator lookups
+        await redeem_collection.create_index("creator_id")
+        # Index for redemption count tracking
+        await redeem_collection.create_index("redeemed_count")
+        # Index for filtering by reward type
+        await redeem_collection.create_index("reward_type")
+        # TTL index to auto-delete codes after 30 days (optional)
+        await redeem_collection.create_index("created_at", expireAfterSeconds=2592000)  # 30 days
+        LOGGER(__name__).info("✅ Redeem collection indexes created successfully")
+    except Exception as e:
+        LOGGER(__name__).error(f"❌ Error creating redeem indexes: {e}")
+
+async def create_user_collection_indexes():
+    """Create indexes for user collection for better performance."""
+    try:
+        # Index for user lookups
+        await user_collection.create_index("id", unique=True)
+        # Index for username lookups
+        await user_collection.create_index("username")
+        # Index for character queries
+        await user_collection.create_index("characters")
+        LOGGER(__name__).info("✅ User collection indexes created successfully")
+    except Exception as e:
+        LOGGER(__name__).error(f"❌ Error creating user collection indexes: {e}")
+
+async def create_character_collection_indexes():
+    """Create indexes for character collection for better performance."""
+    try:
+        # Index for character lookups
+        await collection.create_index("id", unique=True)
+        # Index for anime lookups
+        await collection.create_index("anime")
+        # Index for rarity lookups
+        await collection.create_index("rarity")
+        # Compound index for common queries
+        await collection.create_index([("anime", 1), ("rarity", 1)])
+        LOGGER(__name__).info("✅ Character collection indexes created successfully")
+    except Exception as e:
+        LOGGER(__name__).error(f"❌ Error creating character collection indexes: {e}")
+
+async def initialize_database():
+    """Initialize all database collections and indexes."""
+    try:
+        LOGGER(__name__).info("🔄 Initializing database collections...")
+        
+        # Create all indexes
+        await create_redeem_indexes()
+        await create_user_collection_indexes()
+        await create_character_collection_indexes()
+        
+        LOGGER(__name__).info("✅ Database initialization complete")
+        await PLOG("✅ **Database Initialization Complete**\nAll collections and indexes have been set up successfully.")
+        
+    except Exception as e:
+        LOGGER(__name__).error(f"❌ Database initialization error: {e}")
+        await PLOG(f"❌ **Database Initialization Failed**\nError: `{str(e)}`")
+
+# ==========================================
+# BOT STARTUP HANDLER
+# ==========================================
+
+async def on_startup():
+    """Function to run when bot starts."""
+    LOGGER(__name__).info("🦋 Bot is starting up...")
+    
+    # Initialize database
+    await initialize_database()
+    
+    # Log startup
+    await PLOG(
+        f"🦋 **Bot Started Successfully**\n"
+        f"👤 **Owner:** `{OWNER_ID}`\n"
+        f"📅 **Time:** {__import__('datetime').datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC"
+    )
+    
+    LOGGER(__name__).info("✅ Bot startup complete")
 
 # ---------------------------- END OF CODE ------------------------------
 
