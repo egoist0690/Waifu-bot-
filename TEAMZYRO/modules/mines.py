@@ -98,7 +98,7 @@ def generate_keyboard(grid, game_id, player_id, safe_opened, mine_hits, num_mine
     game_over = mine_hits >= MAX_MINE_HITS
     if safe_opened > 0 and not game_over:
         mult = get_multiplier(num_mines, safe_opened)
-        keyboard.append([InlineKeyboardButton(f"Claim Winnings ({mult}x)", callback_data=f"claim_{game_id}_{player_id}_{safe_opened}")])
+        keyboard.append([InlineKeyboardButton(f"🌸 Claim Winnings ({mult}x)", callback_data=f"claim_{game_id}_{player_id}_{safe_opened}")])
     return InlineKeyboardMarkup(keyboard)
 
 # Retrieve random character based on progression
@@ -196,7 +196,7 @@ async def start_mines(client: Client, message: Message):
             return
 
     if bet < MIN_BET or bet > MAX_BET:
-        await message.reply_text(f"❌ Bet amount must be between {MIN_BET:,} and {MAX_BET:,} coins!")
+        await message.reply_text(f"❌ Bet amount must be between {MIN_BET:,} and {MAX_BET:,} wisteria petals!")
         return
         
     if num_mines < MIN_MINES or num_mines > MAX_MINES:
@@ -205,7 +205,7 @@ async def start_mines(client: Client, message: Message):
 
     user_data = await user_collection.find_one({'id': user_id}, {'balance': 1})
     if not user_data or user_data.get('balance', 0) < bet:
-        await message.reply_text(f"❌ You do not have enough coins to bet {bet:,}! Check `/balance`.")
+        await message.reply_text(f"❌ You do not have enough wisteria petals to bet {bet:,}! Check `/balance`.")
         return
 
     try:
@@ -228,7 +228,7 @@ async def start_mines(client: Client, message: Message):
         "🎮 <b>Minesweeper Casino</b> 🎮\n"
         "━━━━━━━━━━━━━━━━━━━━\n"
         f"👤 <b>Player:</b> {message.from_user.first_name}\n"
-        f"💰 <b>Bet Amount:</b> <code>{bet:,}</code> coins\n"
+        f"🌸 <b>Bet Amount:</b> <code>{bet:,}</code> wisteria petals\n"
         f"💣 <b>Mines Hidden:</b> <code>{num_mines}</code>\n\n"
         "💎 Sweep the 4x4 grid and open safe cells to increase your multiplier!\n"
         "⚠️ Watch out for hidden mines!"
@@ -281,7 +281,7 @@ async def handle_mine_click(client: Client, callback_query):
         caption = (
             "💥 <b>BOOM! Game Over!</b> 💥\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
-            f"You hit a mine and lost your bet of <b>{bet:,} coins</b>!\n\n"
+            f"You hit a mine and lost your bet of <b>{bet:,} wisteria petals</b>!\n\n"
             "💣 = Mine Locations | ✨ = Safe Boxes"
         )
         await callback_query.message.edit_text(
@@ -308,7 +308,7 @@ async def handle_mine_click(client: Client, callback_query):
                 "━━━━━━━━━━━━━━━━━━━━\n"
                 f"You successfully cleared all safe cells!\n"
                 f"📈 <b>Multiplier:</b> {get_multiplier(num_mines, safe_opened)}x\n"
-                f"💰 <b>Winnings:</b> <code>{winnings:,}</code> coins!"
+                f"🌸 <b>Winnings:</b> <code>{winnings:,}</code> wisteria petals!"
             )
             if character:
                 caption += (
@@ -331,7 +331,7 @@ async def handle_mine_click(client: Client, callback_query):
             "━━━━━━━━━━━━━━━━━━━━\n"
             f"💎 <b>Diamonds Found:</b> {safe_opened} / {total_safes}\n"
             f"📈 <b>Multiplier:</b> {mult}x\n"
-            f"💵 <b>Current Valuation:</b> <code>{int(bet * mult):,}</code> coins"
+            f"💵 <b>Current Valuation:</b> <code>{int(bet * mult):,}</code> wisteria petals"
         )
         await callback_query.message.edit_text(
             caption,
@@ -372,10 +372,10 @@ async def handle_claim(client: Client, callback_query):
         
         mult = get_multiplier(num_mines, safe_opened)
         caption_text = (
-            "💰 <b>Winnings Claimed!</b> 💰\n"
+            "🌸 <b>Winnings Claimed!</b> 🌸\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             f"📈 <b>Multiplier:</b> {mult}x\n"
-            f"💰 <b>Cashout:</b> <code>{winnings:,}</code> coins!"
+            f"🌸 <b>Cashout:</b> <code>{winnings:,}</code> wisteria petals!"
         )
         
         if character:
