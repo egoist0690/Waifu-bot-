@@ -39,7 +39,7 @@ async def slot_machine(client: Client, message: Message):
             "🏆 <b>Payout Multipliers:</b>\n"
             "• 3 matches: <b>5.0x payout</b>\n"
             "• 2 matches: <b>1.5x payout</b>\n\n"
-            "⚠️ Min bet: 100 | Max bet: 50,000</blockquote>",
+            "⚠️ Min bet: 100 | Max bet: 50,000 wisteria petals</blockquote>",
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
@@ -51,7 +51,7 @@ async def slot_machine(client: Client, message: Message):
         if amount < 100 or amount > 50000:
             await message.reply_text(
                 "🎰 <b>𝖲𝖫𝖮𝖳𝖲</b>\n\n"
-                "<blockquote>❌ Bet amount must be between 100 and 50,000 coins!</blockquote>",
+                "<blockquote>❌ Bet amount must be between 100 and 50,000 wisteria petals!</blockquote>",
                 parse_mode=enums.ParseMode.HTML,
                 quote=True
             )
@@ -70,7 +70,7 @@ async def slot_machine(client: Client, message: Message):
     if not user_data or user_data.get("balance", 0) < amount:
         await message.reply_text(
             "🎰 <b>𝖲𝖫𝖮𝖳𝖲</b>\n\n"
-            "<blockquote>❌ Insufficient balance to place this bet!</blockquote>",
+            "<blockquote>❌ Insufficient wisteria petals to place this bet!</blockquote>",
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
@@ -87,7 +87,7 @@ async def slot_machine(client: Client, message: Message):
         status_msg = await message.reply_text(
             f"🎰 <b>𝖲𝖫𝖮𝖳 𝖬𝖠𝖢𝖧𝖨𝖭𝖤</b>\n\n"
             f"👤 <b>Player:</b> {message.from_user.mention}\n"
-            f"<blockquote>💰 <b>Bet:</b> {amount} coins\n\n"
+            f"<blockquote>🌸 <b>Bet:</b> {amount} wisteria petals\n\n"
             f"🌀 <b>[ 🎰 | 🎰 | 🎰 ]</b>\n\n"
             f"<i>Rolling the reels...</i></blockquote>",
             parse_mode=enums.ParseMode.HTML,
@@ -133,8 +133,8 @@ async def slot_machine(client: Client, message: Message):
                 f"👤 <b>Player:</b> {message.from_user.mention}\n"
                 f"<blockquote>✨ <b>[ {reel1} | {reel2} | {reel3} ]</b>\n\n"
                 f"{win_msg}\n"
-                f"💰 <b>Net Gain:</b> +{net_change} coins (Payout: {winnings})\n"
-                f"💳 <b>New Balance:</b> {new_balance} coins</blockquote>",
+                f"🌸 <b>Net Gain:</b> +{net_change} wisteria petals (Payout: {winnings})\n"
+                f"💳 <b>New Balance:</b> {new_balance} wisteria petals</blockquote>",
                 parse_mode=enums.ParseMode.HTML
             )
         else:
@@ -146,8 +146,8 @@ async def slot_machine(client: Client, message: Message):
                 f"👤 <b>Player:</b> {message.from_user.mention}\n"
                 f"<blockquote>✨ <b>[ {reel1} | {reel2} | {reel3} ]</b>\n\n"
                 f"{win_msg}\n"
-                f"💸 <b>Net Loss:</b> -{amount} coins\n"
-                f"💳 <b>New Balance:</b> {new_balance} coins</blockquote>",
+                f"💸 <b>Net Loss:</b> -{amount} wisteria petals\n"
+                f"💳 <b>New Balance:</b> {new_balance} wisteria petals</blockquote>",
                 parse_mode=enums.ParseMode.HTML
             )
             
