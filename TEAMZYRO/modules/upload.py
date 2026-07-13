@@ -106,10 +106,10 @@ upload_lock = asyncio.Lock()
 
 
 # ======================================================
-# UPLOAD COMMAND
+# FIXED: UPLOAD COMMAND - Now uses "add" permission
 # ======================================================
 @ZYRO.on_message(filters.command(["upload"]))
-@require_power("add_character")
+@require_power("add")  # ✅ FIXED: Changed from "add_character" to "add"
 async def ul(client, message):
 
     if upload_lock.locked():
