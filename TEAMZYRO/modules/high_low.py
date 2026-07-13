@@ -37,7 +37,7 @@ def generate_hl_keyboard(user_id, current_value):
             InlineKeyboardButton("Lower 📉", callback_data=f"hl_lower_{user_id}")
         ],
         [
-            InlineKeyboardButton(f"💰 Cashout ({current_value} coins)", callback_data=f"hl_cashout_{user_id}")
+            InlineKeyboardButton(f"🌸 Cashout ({current_value} wisteria petals)", callback_data=f"hl_cashout_{user_id}")
         ]
     ])
 
@@ -63,7 +63,7 @@ async def start_hl(client: Client, message: Message):
             "Guess whether the next card will be Higher/Lower than current!\n\n"
             "🏆 <b>Multipliers:</b>\n"
             "• Streak 1: 1.4x | Streak 2: 1.8x | Streak 3: 2.2x (+0.4x each)\n\n"
-            "⚠️ Min bet: 100 | Max bet: 50,000</blockquote>",
+            "⚠️ Min bet: 100 | Max bet: 50,000 wisteria petals</blockquote>",
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
@@ -74,7 +74,7 @@ async def start_hl(client: Client, message: Message):
         if amount < 100 or amount > 50000:
             await message.reply_text(
                 "🃏 <b>𝖧𝖨𝖦𝖧 𝖫𝖮𝖶</b>\n\n"
-                "<blockquote>❌ Bet amount must be between 100 and 50,000 coins!</blockquote>",
+                "<blockquote>❌ Bet amount must be between 100 and 50,000 wisteria petals!</blockquote>",
                 parse_mode=enums.ParseMode.HTML,
                 quote=True
             )
@@ -92,7 +92,7 @@ async def start_hl(client: Client, message: Message):
     if not user_data or user_data.get("balance", 0) < amount:
         await message.reply_text(
             "🃏 <b>𝖧𝖨𝖦𝖧 𝖫𝖮𝖶</b>\n\n"
-            "<blockquote>❌ Insufficient balance to place this bet!</blockquote>",
+            "<blockquote>❌ Insufficient wisteria petals to place this bet!</blockquote>",
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
@@ -115,9 +115,9 @@ async def start_hl(client: Client, message: Message):
         await message.reply_text(
             f"🃏 <b>𝖧𝖨𝖦𝖧𝖤𝖱 𝖮𝖱 𝖫𝖮𝖶𝖤𝖱</b>\n\n"
             f"👤 <b>Player:</b> {message.from_user.mention}\n"
-            f"<blockquote>💰 <b>Starting Bet:</b> {amount} coins\n"
+            f"<blockquote>🌸 <b>Starting Bet:</b> {amount} wisteria petals\n"
             f"📈 <b>Current Win Streak:</b> 0\n"
-            f"💸 <b>Current Value:</b> {amount} coins\n\n"
+            f"💸 <b>Current Value:</b> {amount} wisteria petals\n\n"
             f"🎴 <b>Current Card:</b> {card_str}\n\n"
             f"Guess if the next card will be Higher or Lower!</blockquote>",
             reply_markup=generate_hl_keyboard(user_id, amount),
@@ -173,9 +173,9 @@ async def handle_hl_click(client: Client, callback_query: CallbackQuery):
                 f"🃏 <b>𝖧𝖨𝖦𝖧𝖤𝖱 𝖮𝖱 𝖫𝖮𝖶𝖤𝖱</b>\n\n"
                 f"👤 <b>Player:</b> {callback_query.from_user.mention}\n"
                 f"<blockquote>📈 <b>Final Streak:</b> {game['streak']}\n"
-                f"💰 <b>Cashout Payout:</b> {winnings} coins\n"
-                f"✨ <b>Net Profit:</b> +{net_profit} coins\n"
-                f"💳 <b>New Balance:</b> {new_balance} coins\n\n"
+                f"🌸 <b>Cashout Payout:</b> {winnings} wisteria petals\n"
+                f"✨ <b>Net Profit:</b> +{net_profit} wisteria petals\n"
+                f"💳 <b>New Balance:</b> {new_balance} wisteria petals\n\n"
                 f"✅ Game closed successfully!</blockquote>",
                 parse_mode=enums.ParseMode.HTML
             )
@@ -202,9 +202,9 @@ async def handle_hl_click(client: Client, callback_query: CallbackQuery):
             await callback_query.message.edit_text(
                 f"🃏 <b>𝖧𝖨𝖦𝖧𝖤𝖱 𝖮𝖱 𝖫𝖮𝖶𝖤𝖱</b>\n\n"
                 f"👤 <b>Player:</b> {callback_query.from_user.mention}\n"
-                f"<blockquote>💰 <b>Starting Bet:</b> {game['bet']} coins\n"
+                f"<blockquote>🌸 <b>Starting Bet:</b> {game['bet']} wisteria petals\n"
                 f"📈 <b>Current Win Streak:</b> {game['streak']}\n"
-                f"💸 <b>Current Value:</b> {game['current_value']} coins\n\n"
+                f"💸 <b>Current Value:</b> {game['current_value']} wisteria petals\n\n"
                 f"🎴 <b>Current Card:</b> {card_str}\n\n"
                 f"👔 <b>Tie Card Swapped!</b> Guess Higher or Lower!</blockquote>",
                 reply_markup=generate_hl_keyboard(user_id, game['current_value']),
@@ -223,9 +223,9 @@ async def handle_hl_click(client: Client, callback_query: CallbackQuery):
             await callback_query.message.edit_text(
                 f"🃏 <b>𝖧𝖨𝖦𝖧𝖤𝖱 𝖮𝖱 𝖫𝖮𝖶𝖤𝖱</b>\n\n"
                 f"👤 <b>Player:</b> {callback_query.from_user.mention}\n"
-                f"<blockquote>💰 <b>Starting Bet:</b> {game['bet']} coins\n"
+                f"<blockquote>🌸 <b>Starting Bet:</b> {game['bet']} wisteria petals\n"
                 f"📈 <b>Current Win Streak:</b> {game['streak']} 🔥\n"
-                f"💸 <b>Current Value:</b> {game['current_value']} coins\n\n"
+                f"💸 <b>Current Value:</b> {game['current_value']} wisteria petals\n\n"
                 f"🎴 <b>Current Card:</b> {card_str}\n\n"
                 f"✅ <b>Correct!</b> Guess Higher or Lower!</blockquote>",
                 reply_markup=generate_hl_keyboard(user_id, game['current_value']),
@@ -242,11 +242,11 @@ async def handle_hl_click(client: Client, callback_query: CallbackQuery):
             await callback_query.message.edit_text(
                 f"🃏 <b>𝖧𝖨𝖦𝖧𝖤𝖱 𝖮𝖱 𝖫𝖮𝖶𝖤𝖱</b>\n\n"
                 f"👤 <b>Player:</b> {callback_query.from_user.mention}\n"
-                f"<blockquote>💰 <b>Starting Bet:</b> {game['bet']} coins\n"
+                f"<blockquote>🌸 <b>Starting Bet:</b> {game['bet']} wisteria petals\n"
                 f"📉 <b>Final Streak:</b> {game['streak']}\n"
                 f"🎴 <b>Drawn Card:</b> {card_str}\n\n"
-                f"❌ <b>Busted! Game Over.</b> You lost your bet of {game['bet']} coins!\n"
-                f"💳 <b>New Balance:</b> {new_balance} coins</blockquote>",
+                f"❌ <b>Busted! Game Over.</b> You lost your bet of {game['bet']} wisteria petals!\n"
+                f"💳 <b>New Balance:</b> {new_balance} wisteria petals</blockquote>",
                 parse_mode=enums.ParseMode.HTML
             )
 
