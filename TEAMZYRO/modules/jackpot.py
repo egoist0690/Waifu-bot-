@@ -48,20 +48,20 @@ async def basket(bot, message):
 
     # Calculate rewards
     if dice_score == 64:
-        coins_earned = 2000
+        wisteria_earned = 2000
     else:
-        coins_earned = 5 * dice_score
+        wisteria_earned = 5 * dice_score
 
     # Construct update query
     if last_played == str(today):
         update_query = {
             "$set": {"last_played": str(today)},
-            "$inc": {"balance": coins_earned, "plays_today": 1}
+            "$inc": {"balance": wisteria_earned, "plays_today": 1}
         }
     else:
         update_query = {
             "$set": {"last_played": str(today), "plays_today": 1},
-            "$inc": {"balance": coins_earned}
+            "$inc": {"balance": wisteria_earned}
         }
 
     # Update user's balance and play count
@@ -76,8 +76,8 @@ async def basket(bot, message):
         f"🎰 <b>𝖩𝖠𝖢𝖪𝖯𝖮𝖳 𝖱𝖤𝖲𝖴𝖫𝖳</b>\n\n"
         f"👤 <b>Player:</b> {message.from_user.mention}\n"
         f"<blockquote>🎲 <b>Dice Score:</b> {dice_score}\n"
-        f"💰 <b>Earned:</b> +{coins_earned} coins 🎉\n"
-        f"💳 <b>New Balance:</b> {updated_user['balance']} coins</blockquote>",
+        f"🌸 <b>Earned:</b> +{wisteria_earned} wisteria petals 🎉\n"
+        f"💳 <b>New Balance:</b> {updated_user['balance']} wisteria petals</blockquote>",
         quote=True,
         parse_mode=enums.ParseMode.HTML
     )
