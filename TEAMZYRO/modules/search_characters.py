@@ -15,7 +15,7 @@ async def handle_search(client, message, query=None, page=1, is_callback=False):
         if not query:
             args = message.command
             if len(args) < 2:
-                await message.reply_text("Please provide a character name. Usage: /sips {character name}")
+                await message.reply_text("🌸 *Fufufu~* You must tell me which spirit you're seeking! Usage: `/sips [character name]`")
                 return
             query = " ".join(args[1:]).strip()
 
@@ -26,28 +26,28 @@ async def handle_search(client, message, query=None, page=1, is_callback=False):
         total_characters = await collection.count_documents({"name": {"$regex": query, "$options": "i"}})
 
         if total_characters == 0:
-            await message.reply_text(f"No characters found matching: {query}")
+            await message.reply_text(f"🌸 *Ara ara~* No spirits match that name, dear. Would you like to try another?")
             return
 
         # Fetch the characters for the current page
         characters = await collection.find({"name": {"$regex": query, "$options": "i"}}).skip(skip).limit(per_page).to_list(length=per_page)
 
         # Create response message
-        response = f"**Total Characters Found:** {total_characters}\n\n"
+        response = f"🌸 **Spirits Found:** {total_characters}\n\n"
         for index, character in enumerate(characters, start=1 + skip):
-            rarity_emoji = rarity_map.get(character['rarity'], "❓")  # Default to ❓ if rarity is not found
+            rarity_emoji = rarity_map.get(character['rarity'], "❓")
             response += (
                 f"◈⌠{rarity_emoji}⌡ **{index}** {character['name']}\n"
-                f"Anime: {character['anime']}\n"
-                f"ID: {character['id']}\n\n"
+                f"⛩️ Anime: {character['anime']}\n"
+                f"🆔 ID: `{character['id']}`\n\n"
             )
 
         # Create pagination buttons
         buttons = []
         if page > 1:
-            buttons.append(InlineKeyboardButton("⬅️ Back", callback_data=f"sips:{query}:{page - 1}"))
+            buttons.append(InlineKeyboardButton("⬅️ Previous", callback_data=f"sips:{query}:{page - 1}"))
         if skip + per_page < total_characters:
-            buttons.append(InlineKeyboardButton("➡️ Next", callback_data=f"sips:{query}:{page + 1}"))
+            buttons.append(InlineKeyboardButton("Next ➡️", callback_data=f"sips:{query}:{page + 1}"))
 
         # Edit the message if it's a callback query, otherwise send a new one
         if is_callback:
@@ -64,11 +64,11 @@ async def handle_search(client, message, query=None, page=1, is_callback=False):
             )
 
     except Exception as e:
-        error_message = f"Error: {str(e)}"
+        error_message = f"🌸 *Ara ara~* An unexpected breeze scattered our search. Please try again!"
         if is_callback:
-            await message.edit_text(error_message)
+            await message.edit_text(error_message, parse_mode=ParseMode.MARKDOWN)
         else:
-            await message.reply_text(error_message)
+            await message.reply_text(error_message, parse_mode=ParseMode.MARKDOWN)
 
 @app.on_message(filters.command("sips"))
 async def search_characters(client, message):
@@ -85,5 +85,4 @@ async def handle_pagination(client, callback_query):
         await handle_search(client, callback_query.message, query=query, page=page, is_callback=True)
 
     except Exception as e:
-        await callback_query.answer(f"Error: {str(e)}", show_alert=True)
-
+        await callback_query.answer(f"🌸 *Ara~* An error occurred: {str(e)}", show_alert=True)
