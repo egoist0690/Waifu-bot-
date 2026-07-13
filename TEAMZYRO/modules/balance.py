@@ -45,10 +45,10 @@ async def daily_gift(client: Client, message: Message):
             last_daily = datetime.fromisoformat(last_daily).date()
         
         if last_daily == today:
-            await message.reply_text("🎁 You have already claimed your daily gift today! Come back tomorrow.")
+            await message.reply_text("🌸 You have already claimed your daily wisteria petals today! Come back tomorrow.")
             return
     
-    # Give daily gift of 100 coins
+    # Give daily gift of 100 wisteria petals
     daily_amount = 100
     await user_collection.update_one(
         {'id': user_id}, 
@@ -63,9 +63,9 @@ async def daily_gift(client: Client, message: Message):
     user_name = html.escape(message.from_user.first_name)
     
     await message.reply_text(
-        f"🎁 {user_name}, you received your daily gift!\n"
-        f"💰 +{daily_amount} coins\n"
-        f"💳 New Balance: {new_balance} coins"
+        f"🌸 {user_name}, you received your daily wisteria petals!\n"
+        f"🌸 +{daily_amount} wisteria petals\n"
+        f"💳 New Balance: {new_balance} wisteria petals"
     )
 
 # Weekly gift system
@@ -95,10 +95,10 @@ async def weekly_gift(client: Client, message: Message):
         if last_weekly >= week_start:
             next_week = week_start + timedelta(days=7)
             days_left = (next_week - now).days
-            await message.reply_text(f"🎁 You have already claimed your weekly gift! Next gift available in {days_left} days.")
+            await message.reply_text(f"🌸 You have already claimed your weekly wisteria petals! Next gift available in {days_left} days.")
             return
     
-    # Give weekly gift of 2000 coins
+    # Give weekly gift of 2000 wisteria petals
     weekly_amount = 2000
     await user_collection.update_one(
         {'id': user_id}, 
@@ -113,9 +113,9 @@ async def weekly_gift(client: Client, message: Message):
     user_name = html.escape(message.from_user.first_name)
     
     await message.reply_text(
-        f"🎉 {user_name}, you received your weekly gift!\n"
-        f"💰 +{weekly_amount} coins\n"
-        f"💳 New Balance: {new_balance} coins"
+        f"🎉 {user_name}, you received your weekly wisteria petals!\n"
+        f"🌸 +{weekly_amount} wisteria petals\n"
+        f"💳 New Balance: {new_balance} wisteria petals"
     )
 
 @app.on_message(filters.command("balance"))
@@ -129,7 +129,7 @@ async def balance(client: Client, message: Message):
     
     user_balance, user_tokens = await get_balance(user_id)
     response = (
-        f"{html.escape(message.from_user.first_name)} \n◈⌠ {user_balance} coins⌡\n"
+        f"{html.escape(message.from_user.first_name)} \n◈⌠ {user_balance} wisteria petals⌡\n"
         f"◈ ⌠ {user_tokens} Tokens⌡"
     )
     await message.reply_text(response, reply_to_message_id=False)
@@ -183,7 +183,7 @@ async def pay(client: Client, message: Message):
 
     sender_balance, _ = await get_balance(sender_id)
     if sender_balance < amount:
-        await message.reply_text("Insufficient balance.")
+        await message.reply_text("Insufficient wisteria petals.")
         return
 
     await user_collection.update_one({'id': sender_id}, {'$inc': {'balance': -amount}})
@@ -197,14 +197,14 @@ async def pay(client: Client, message: Message):
     sender_display = html.escape(message.from_user.first_name or str(sender_id))
 
     await message.reply_text(
-        f"✅ You paid {amount} coins to {recipient_display}.\n"
-        f"💰 Your New Balance: {updated_sender_balance} coins"
+        f"✅ You paid {amount} wisteria petals to {recipient_display}.\n"
+        f"🌸 Your New Balance: {updated_sender_balance} wisteria petals"
     )
 
     await client.send_message(
         chat_id=recipient_id,
-        text=f"🎉 You received {amount} coins from {sender_display}!\n"
-        f"💰 Your New Balance: {updated_recipient_balance} coins"
+        text=f"🎉 You received {amount} wisteria petals from {sender_display}!\n"
+        f"🌸 Your New Balance: {updated_recipient_balance} wisteria petals"
     )
 
 @app.on_message(filters.command("kill"))
@@ -273,9 +273,9 @@ async def kill_handler(client, message):
                 new_balance = max(0, current_balance - amount)  # Ensure balance doesn't go negative
                 
                 await user_collection.update_one({"id": user_id}, {"$set": {"balance": new_balance}})
-                await message.reply_text(f"{amount} has been deducted from the user's balance. New balance: {new_balance}")
+                await message.reply_text(f"{amount} wisteria petals have been deducted from the user's balance. New balance: {new_balance} wisteria petals")
             else:
-                await message.reply_text("The user has no balance to deduct from.")
+                await message.reply_text("The user has no wisteria petals to deduct from.")
 
         else:
             await message.reply_text("Invalid option. Use `c` for character, `f` for full data, or `b {amount}` to deduct balance.")
