@@ -15,7 +15,7 @@ from TEAMZYRO import ZYRO as app
 from TEAMZYRO import collection, user_collection, db, require_power, BOT_LOGGING
 
 # Collections
-redeem_collection = db["redeem_codes"]  # Collection for redeem codes
+redeem_collection = db["redeem_codes"]
 
 # ==========================================
 # COMMAND: /gen (VIP/Owner Only)
@@ -25,14 +25,14 @@ redeem_collection = db["redeem_codes"]  # Collection for redeem codes
 @require_power("VIP")
 async def generate_redeem_code(client, message):
     """
-    Generate redeem codes for coins or characters.
+    Generate redeem codes for wisteria petals or characters.
     
     Usage:
-        /gen coins <amount> <limit>          - Generate code for coins
+        /gen coins <amount> <limit>          - Generate code for wisteria petals
         /gen <character_id> <copies> <limit> - Generate code for character copies
         
     Examples:
-        /gen coins 5000 10      - 10 people can redeem 5000 coins each
+        /gen coins 5000 10      - 10 people can redeem 5000 wisteria petals each
         /gen 12345 3 5          - 5 people can redeem 3 copies of character 12345
     """
     args = message.command
@@ -42,10 +42,10 @@ async def generate_redeem_code(client, message):
     if len(args) < 3:
         await message.reply_text(
             "**Usage:**\n"
-            "`/gen coins <amount> <limit>` - Generate coin redeem code\n"
+            "`/gen coins <amount> <limit>` - Generate wisteria petal redeem code\n"
             "`/gen <character_id> <copies> <limit>` - Generate character redeem code\n\n"
             "**Examples:**\n"
-            "`/gen coins 5000 10` - 10 users can redeem 5000 coins each\n"
+            "`/gen coins 5000 10` - 10 users can redeem 5000 wisteria petals each\n"
             "`/gen 12345 3 5` - 5 users can redeem 3 copies each",
             parse_mode=enums.ParseMode.MARKDOWN
         )
@@ -65,7 +65,7 @@ async def generate_redeem_code(client, message):
     
     # Check if it's a coin generation
     if args[1].lower() == "coins":
-        # Handle coin generation
+        # Handle wisteria petal generation
         if len(args) != 4:
             await message.reply_text(
                 "❌ **Invalid format!**\n"
@@ -82,13 +82,13 @@ async def generate_redeem_code(client, message):
                 await message.reply_text("❌ Amount too large. Maximum: 999,999,999")
                 return
         except ValueError:
-            await message.reply_text("❌ Invalid coin amount. Please enter a positive number.")
+            await message.reply_text("❌ Invalid wisteria petal amount. Please enter a positive number.")
             return
         
-        # Generate coin redeem code
+        # Generate wisteria petal redeem code
         reward_type = "coins"
         reward_data = coin_amount
-        reward_description = f"{coin_amount:,} coins"
+        reward_description = f"{coin_amount:,} wisteria petals"
         
     else:
         # Handle character generation
@@ -150,9 +150,9 @@ async def generate_redeem_code(client, message):
         "creator_id": user_id,
         "created_at": datetime.utcnow(),
         "timestamp": time.time(),
-        "limit": limit,  # How many users can redeem
-        "redeemed_count": 0,  # How many have redeemed
-        "redeemed_by": [],  # List of user IDs who redeemed
+        "limit": limit,
+        "redeemed_count": 0,
+        "redeemed_by": [],
         "is_active": True
     }
     
@@ -192,7 +192,7 @@ async def generate_redeem_code(client, message):
 @app.on_message(filters.command("redeem"))
 async def redeem_code(client, message):
     """
-    Redeem a code for coins or characters.
+    Redeem a code for wisteria petals or characters.
     Anyone can use this command.
     """
     args = message.command
@@ -201,7 +201,7 @@ async def redeem_code(client, message):
     if len(args) < 2:
         await message.reply_text(
             "**Usage:** `/redeem <code>`\n\n"
-            "Redeem your code to receive coins or characters!",
+            "Redeem your code to receive wisteria petals or characters!",
             parse_mode=enums.ParseMode.MARKDOWN
         )
         return
@@ -261,10 +261,10 @@ async def redeem_code(client, message):
     
     try:
         if reward_type == "coins":
-            # Handle coin redemption
+            # Handle wisteria petal redemption
             coin_amount = int(reward_data)
             
-            # Add coins to user's balance
+            # Add wisteria petals to user's balance
             await user_collection.update_one(
                 {'id': user_id},
                 {'$inc': {'balance': coin_amount}},
@@ -286,9 +286,9 @@ async def redeem_code(client, message):
             
             # Send success message
             await message.reply_text(
-                f"💰 **Redeem Successful!**\n\n"
-                f"🎉 You received `{coin_amount:,}` coins!\n"
-                f"💳 **New Balance:** `{new_balance:,}` coins\n\n"
+                f"🌸 **Redeem Successful!**\n\n"
+                f"🎉 You received `{coin_amount:,}` wisteria petals!\n"
+                f"💳 **New Balance:** `{new_balance:,}` wisteria petals\n\n"
                 f"🎟 **Code:** `{redeem_code}`\n"
                 f"👥 **Remaining Slots:** {limit - (redeemed_count + 1)}",
                 parse_mode=enums.ParseMode.MARKDOWN
@@ -297,10 +297,10 @@ async def redeem_code(client, message):
             # Log the redemption
             await app.send_message(
                 chat_id=BOT_LOGGING,
-                text=f"💰 **[COIN REDEEMED]**\n"
+                text=f"🌸 **[WISTERIA PETALS REDEEMED]**\n"
                      f"👤 **User:** {message.from_user.first_name} (`{user_id}`)\n"
                      f"🎟 **Code:** `{redeem_code}`\n"
-                     f"💳 **Amount:** `{coin_amount:,}` coins\n"
+                     f"🌸 **Amount:** `{coin_amount:,}` wisteria petals\n"
                      f"👥 **Remaining:** {limit - (redeemed_count + 1)} slots\n"
                      f"📅 **Time:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC",
                 parse_mode=enums.ParseMode.MARKDOWN
