@@ -26,14 +26,11 @@ rarity_map = {
     11: "💝 Valentine", 
     12: "🎃 Halloween", 
     13: "🎄 Christmas Special", 
-    14: "🪐 Omniversal", 
-    15: "🎭 Cosplay Master 🎭",
-    16: "🧧 Events",
-    17: "🍑 Echhi",
-    18: "🎗️ AMV Edition",
-    19: "🌟 Luminous",
-    20: "🌧 Rainy",
-    22: "🍭 Winter event",
+    14: "🧧 Events",
+    15: "🍑 Echhi",
+    16: "🎗️ AMV Edition",
+    17: "🌧 Rainy",
+    18: "🫧 Aquatic",
 }
 """
 
