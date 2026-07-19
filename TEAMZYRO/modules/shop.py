@@ -62,6 +62,8 @@ RARITY_ORDER = [
     "💸 Premium Edition",
 ]
 
+# Premium rarity only for shop
+PREMIUM_RARITY = "💸 Premium Edition"
 
 # Safe split
 def safe_split(data, sep="_", expected=2):
@@ -77,54 +79,6 @@ async def get_active_discount():
         return discount["percent"]
     return DEFAULT_DISCOUNT
 
-
-# ---------------- DISCOUNT SYSTEM ---------------- #
-
-@app.on_message(filters.command("discount"))
-async def set_discount(client, message):
-    if message.from_user.id != OWNER_ID:
-        return await message.reply("🌸 *Ara ara~* Only the garden keeper can set discounts, dear.")
-
-    args = message.text.split()
-
-    if len(args) < 3:
-        return await message.reply(
-            "🌸 **Usage:**\n"
-            "`/discount <percent> <duration>`\n\n"
-            "**Examples:**\n"
-            "`/discount 30 1d` - 30% off for 1 day\n"
-            "`/discount 25 12h` - 25% off for 12 hours"
-        )
-
-    try:
-        percent = int(args[1])
-    except ValueError:
-        return await message.reply("🌸 *Fufufu~* Please enter a valid percentage!")
-
-    duration = args[2].lower()
-
-    if duration.endswith("h"):
-        hours = int(duration[:-1])
-        expires = datetime.utcnow() + timedelta(hours=hours)
-
-    elif duration.endswith("d"):
-        days = int(duration[:-1])
-        expires = datetime.utcnow() + timedelta(days=days)
-
-    else:
-        return await message.reply("🌸 *Ara~* Duration must end with 'h' (hours) or 'd' (days).")
-
-    await discounts_collection.delete_many({})
-    await discounts_collection.insert_one({
-        "percent": percent,
-        "expires_at": expires
-    })
-
-    await message.reply(
-        f"🌸 *Wonderful!* A {percent}% discount has been applied for {duration}.\n"
-        f"*Fufufu~* The garden spirits will be delighted!"
-    )
-    
 
 def is_video(url):
     return any(url.lower().endswith(ext) for ext in [".mp4", ".mov", ".webm"])
@@ -184,7 +138,7 @@ async def add_shop_stock(client, message):
         return
     
     # Check if character is Premium rarity (shop requirement)
-    if character.get('rarity') != "💸 Premium Edition":
+    if character.get('rarity') != PREMIUM_RARITY:
         await message.reply_text(
             f"🌸 *Fufufu~* Character `{character['name']}` has rarity `{character.get('rarity', 'Unknown')}`.\n"
             f"The shop only accepts Premium Edition spirits!"
@@ -199,7 +153,7 @@ async def add_shop_stock(client, message):
         new_amount = existing_stock['stock'] + amount
         await shop_stock_collection.update_one(
             {'character_id': character_id},
-            {'$set': {'stock': new_amount}}
+            {'$set': {'stock': new_amount, 'last_updated': datetime.utcnow()}}
         )
         await message.reply_text(
             f"🌸 **Stock Updated!**\n\n"
@@ -338,262 +292,386 @@ async def remove_shop_stock(client, message):
     )
 
 
-# ---------------- SHOP MENU ---------------- #
+# ==========================================
+# COMMAND: /shop - Premium Only Direct Display
+# ==========================================
 
 @app.on_message(filters.command(["shop", "hshop", "hshopmenu"]))
 async def shop_menu(client, message):
-    keyboard = []
+    """
+    Display shop with only Premium characters.
+    Shows character image, info, and buy button.
+    """
+    user_id = message.from_user.id
     
-    # Display rarities in proper order with prices
-    for rarity in RARITY_ORDER:
-        price = RARITY_PRICE.get(rarity, 1000)
-        emoji = RARITY_EMOJIS.get(rarity, "🌸")
-        
-        # Format price with commas
-        price_str = f"{price:,}"
-        
-        # Add different visual indicators for high value rarities
-        if price >= 100_000:
-            label = f"👑 {emoji} {rarity} — {price_str} petals"
-        elif price >= 50_000:
-            label = f"💎 {emoji} {rarity} — {price_str} petals"
-        elif price >= 25_000:
-            label = f"🌟 {emoji} {rarity} — {price_str} petals"
-        else:
-            label = f"{emoji} {rarity} — {price_str} petals"
-            
-        keyboard.append([InlineKeyboardButton(label, callback_data=f"xeno_{RARITY_ORDER.index(rarity)}")])
-
-    await message.reply_photo(
-        photo="https://files.catbox.moe/ohi1vs.jpg",
-        caption=(
-            "🌸 **Welcome to the Wisteria Bazaar!** 🌸\n\n"
-            "*Fufufu~* Here, you may acquire beautiful spirits to adorn your garden.\n"
-            "Browse by rarity, and remember—each spirit is unique!\n\n"
-            "🌸 **Rarity Guide:**\n"
-            "╔═══════════════════════════════╗\n"
-            "║ ⚪️ Common     →    1,000     ║\n"
-            "║ 🟣 Rare       →    5,000     ║\n"
-            "║ 🟢 Medium     →   30,000     ║\n"
-            "║ 🟡 Legendary  →   15,000     ║\n"
-            "║ 💮 Special    →   50,000     ║\n"
-            "║ 🔮 Limited    →   75,000     ║\n"
-            "║ 💸 Premium    →  120,000 👑  ║\n"
-            "╚═══════════════════════════════╝\n\n"
-            "✨ *Happy collecting, dear butterfly!*"
-        ),
-        reply_markup=InlineKeyboardMarkup(keyboard)
-    )
-
-
-# ---------------- SHOW RARITY ---------------- #
-
-@app.on_callback_query(filters.regex(r"^xeno_\d+$"))
-async def show_rarity_list(client, callback_query):
-    _, index_str = safe_split(callback_query.data, "_", 2)
-
-    rarity = RARITY_ORDER[int(index_str)]
-    user_id = callback_query.from_user.id
-
-    # Get characters of this rarity that have stock
-    # First, get all characters of this rarity from main collection
-    all_characters = await collection.find({"rarity": rarity}).to_list(None)
+    # Get all Premium characters with stock
+    all_premium = await collection.find({"rarity": PREMIUM_RARITY}).to_list(None)
     
-    if not all_characters:
-        return await callback_query.answer("🌸 *Ara~* No spirits of this rarity are available right now!", show_alert=True)
+    if not all_premium:
+        await message.reply_text(
+            "🌸 *Ara ara~* No Premium spirits available in the garden!\n\n"
+            "*Fufufu~* Please check back later for new arrivals."
+        )
+        return
     
-    # Get shop stock for these characters
-    character_ids = [char['id'] for char in all_characters]
+    # Get shop stock for Premium characters
+    character_ids = [char['id'] for char in all_premium]
     stock_entries = await shop_stock_collection.find(
         {'character_id': {'$in': character_ids}, 'stock': {'$gt': 0}}
     ).to_list(None)
     
-    # Create a set of character IDs that have stock
-    in_stock_ids = {entry['character_id'] for entry in stock_entries}
+    # Create a dict of character_id -> stock
+    stock_dict = {entry['character_id']: entry['stock'] for entry in stock_entries}
     
     # Filter characters to only those in stock
-    characters = [char for char in all_characters if char['id'] in in_stock_ids]
+    characters = [char for char in all_premium if char['id'] in stock_dict]
     
     if not characters:
-        return await callback_query.answer("🌸 *Ara ara~* No spirits of this rarity are currently in stock!", show_alert=True)
-
+        await message.reply_text(
+            "🌸 *Ara ara~* No Premium spirits are currently in stock!\n\n"
+            "*Fufufu~* The bazaar will be restocked soon. Please check back later."
+        )
+        return
+    
     random.shuffle(characters)
-
-    # Get user's current balance
-    user = await user_collection.find_one({"id": user_id})
-    balance = user.get("balance", 0) if user else 0
-
-    user_shop_state[user_id] = {
-        "rarity": rarity,
-        "index": 0,
-        "characters": characters[:5],
-        "balance": balance
-    }
-
-    await show_character(client, callback_query.message, user_id)
-    await callback_query.answer()
-
-
-# ---------------- SHOW CHARACTER ---------------- #
-
-async def show_character(client, msg, user_id):
-    data = user_shop_state[user_id]
-    char = data["characters"][data["index"]]
-    char_id = char.get('id')
-
-    # Get stock information
-    stock_entry = await shop_stock_collection.find_one({'character_id': char_id})
-    stock_count = stock_entry['stock'] if stock_entry else 0
-
-    price = RARITY_PRICE.get(char["rarity"], 1000)
-    discount = await get_active_discount()
-    discounted_price = int(price * (100 - discount) / 100)
-    original_price_display = f"~~{price:,}~~" if discount > 0 else ""
-
-    emoji = RARITY_EMOJIS.get(char["rarity"], "🌸")
-    description = RARITY_DESCRIPTIONS.get(char["rarity"], "A beautiful spirit awaits you~")
     
     # Get user's balance
     user = await user_collection.find_one({"id": user_id})
     balance = user.get("balance", 0) if user else 0
-    data["balance"] = balance
+    
+    # Store shop state
+    user_shop_state[user_id] = {
+        "index": 0,
+        "characters": characters,
+        "stock_dict": stock_dict,
+        "balance": balance
+    }
+    
+    # Display first character
+    await display_shop_character(client, message, user_id, is_initial=True)
+
+
+async def display_shop_character(client, message, user_id, is_initial=False, callback_query=None):
+    """
+    Display a single character with image, info, and buy button.
+    """
+    state = user_shop_state.get(user_id)
+    if not state:
+        return
+    
+    index = state["index"]
+    characters = state["characters"]
+    stock_dict = state["stock_dict"]
+    
+    # Check if index is valid
+    if index >= len(characters):
+        index = 0
+        state["index"] = 0
+    
+    char = characters[index]
+    char_id = char.get('id')
+    stock_count = stock_dict.get(char_id, 0)
+    
+    # Get price
+    price = RARITY_PRICE.get(char["rarity"], 120000)
+    discount = await get_active_discount()
+    discounted_price = int(price * (100 - discount) / 100)
+    original_price_display = f"~~{price:,}~~" if discount > 0 else ""
+    
+    # Get user's balance
+    user = await user_collection.find_one({"id": user_id})
+    balance = user.get("balance", 0) if user else 0
+    state["balance"] = balance
     
     # Determine if user can afford
-    can_afford = balance >= discounted_price
-    afford_status = "✅ You can afford this spirit!" if can_afford else f"❌ You need {discounted_price - balance:,} more petals"
-
-    # Price tier indicator
-    if price >= 100_000:
-        tier_icon = "👑 **Premium Tier** — The rarest of rare!"
-    elif price >= 50_000:
-        tier_icon = "💎 **Luxury Tier** — A true treasure!"
-    elif price >= 25_000:
-        tier_icon = "🌟 **Elite Tier** — Exceptional beauty!"
-    else:
-        tier_icon = "🌸 **Standard Tier** — Lovely in every way!"
-
+    can_afford = balance >= discounted_price and stock_count > 0
+    
+    # Build caption
     caption = (
-        f"🌸 *A beautiful spirit awaits!* 🦋\n\n"
+        f"🌸 **Wisteria Bazaar** 🌸\n\n"
         f"✨ **Name:** {char['name']}\n"
-        f"⛩️ **Anime:** {char['anime']}\n"
-        f"{emoji} **Rarity:** {char['rarity']}\n"
+        f"⛩️ **Anime:** {char.get('anime', 'Unknown')}\n"
+        f"🌟 **Rarity:** {char.get('rarity', 'Premium')}\n"
         f"🌸 **Price:** {original_price_display} `{discounted_price:,}` wisteria petals"
         f"{f' ({discount}% off!)' if discount > 0 else ''}\n"
-        f"📦 **Stock Available:** `{stock_count}`\n"
-        f"💳 **Your Petals:** `{balance:,}`\n"
-        f"📊 **Status:** {afford_status}\n"
-        f"🏷️ **Tier:** {tier_icon}\n\n"
-        f"*{description}*\n\n"
-        f"🆔 **ID:** `{char['id']}`\n"
-        f"*Fufufu~* Will you bring this spirit into your garden?"
+        f"📦 **Stock:** `{stock_count}`\n"
+        f"💳 **Your Petals:** `{balance:,}`\n\n"
+        f"*{RARITY_DESCRIPTIONS.get(char.get('rarity', ''), 'A beautiful Premium spirit awaits you~')}*"
+    )
+    
+    # Build navigation and buy buttons
+    keyboard = []
+    
+    # Navigation row
+    nav_buttons = []
+    if index > 0:
+        nav_buttons.append(InlineKeyboardButton("⬅️", callback_data=f"shop_prev_{user_id}"))
+    if index < len(characters) - 1:
+        nav_buttons.append(InlineKeyboardButton("➡️", callback_data=f"shop_next_{user_id}"))
+    if nav_buttons:
+        keyboard.append(nav_buttons)
+    
+    # Buy button
+    if can_afford:
+        keyboard.append([
+            InlineKeyboardButton(f"🌸 Buy ({discounted_price:,} petals)", callback_data=f"shop_buy_{user_id}_{index}")
+        ])
+    else:
+        if stock_count == 0:
+            keyboard.append([
+                InlineKeyboardButton("🔒 Out of Stock", callback_data="shop_noop")
+            ])
+        else:
+            keyboard.append([
+                InlineKeyboardButton(f"🔒 Need {discounted_price - balance:,} more petals", callback_data="shop_noop")
+            ])
+    
+    # Refresh button
+    keyboard.append([
+        InlineKeyboardButton("🔄 Refresh (5,000 petals)", callback_data=f"shop_refresh_{user_id}")
+    ])
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    # Send or edit message
+    if is_initial:
+        # Send new message with character image
+        if is_video(char.get("img_url", "")):
+            await message.reply_video(
+                video=char["img_url"],
+                caption=caption,
+                reply_markup=reply_markup,
+                parse_mode=ParseMode.MARKDOWN
+            )
+        else:
+            await message.reply_photo(
+                photo=char.get("img_url", ""),
+                caption=caption,
+                reply_markup=reply_markup,
+                parse_mode=ParseMode.MARKDOWN
+            )
+    else:
+        # Edit existing message
+        if callback_query:
+            try:
+                if is_video(char.get("img_url", "")):
+                    await callback_query.message.edit_media(
+                        InputMediaVideo(char["img_url"], caption=caption),
+                        reply_markup=reply_markup
+                    )
+                else:
+                    await callback_query.message.edit_media(
+                        InputMediaPhoto(char["img_url"], caption=caption),
+                        reply_markup=reply_markup
+                    )
+            except Exception:
+                # If media edit fails, edit text
+                await callback_query.message.edit_text(
+                    caption,
+                    reply_markup=reply_markup,
+                    parse_mode=ParseMode.MARKDOWN
+                )
+
+
+# ==========================================
+# SHOP NAVIGATION CALLBACKS
+# ==========================================
+
+@app.on_callback_query(filters.regex(r"^shop_next_(\d+)$"))
+async def shop_next_character(client, callback_query):
+    user_id = int(callback_query.matches[0].group(1))
+    
+    if callback_query.from_user.id != user_id:
+        await callback_query.answer("🌸 *Ara~* This isn't your shop session!", show_alert=True)
+        return
+    
+    state = user_shop_state.get(user_id)
+    if not state:
+        await callback_query.answer("🌸 *Ara~* Your session has expired. Please start from /shop again!", show_alert=True)
+        return
+    
+    if state["index"] >= len(state["characters"]) - 1:
+        await callback_query.answer("🌸 *Fufufu~* You're at the last spirit!", show_alert=True)
+        return
+    
+    state["index"] += 1
+    await display_shop_character(client, callback_query.message, user_id, is_initial=False, callback_query=callback_query)
+    await callback_query.answer()
+
+
+@app.on_callback_query(filters.regex(r"^shop_prev_(\d+)$"))
+async def shop_prev_character(client, callback_query):
+    user_id = int(callback_query.matches[0].group(1))
+    
+    if callback_query.from_user.id != user_id:
+        await callback_query.answer("🌸 *Ara~* This isn't your shop session!", show_alert=True)
+        return
+    
+    state = user_shop_state.get(user_id)
+    if not state:
+        await callback_query.answer("🌸 *Ara~* Your session has expired. Please start from /shop again!", show_alert=True)
+        return
+    
+    if state["index"] <= 0:
+        await callback_query.answer("🌸 *Fufufu~* You're at the first spirit!", show_alert=True)
+        return
+    
+    state["index"] -= 1
+    await display_shop_character(client, callback_query.message, user_id, is_initial=False, callback_query=callback_query)
+    await callback_query.answer()
+
+
+# ==========================================
+# SHOP BUY CALLBACK
+# ==========================================
+
+@app.on_callback_query(filters.regex(r"^shop_buy_(\d+)_(\d+)$"))
+async def shop_buy_character(client, callback_query):
+    user_id = int(callback_query.matches[0].group(1))
+    index = int(callback_query.matches[0].group(2))
+    
+    if callback_query.from_user.id != user_id:
+        await callback_query.answer("🌸 *Ara~* This isn't your shop session!", show_alert=True)
+        return
+    
+    state = user_shop_state.get(user_id)
+    if not state:
+        await callback_query.answer("🌸 *Ara~* Your session has expired. Please start from /shop again!", show_alert=True)
+        return
+    
+    if index != state["index"]:
+        await callback_query.answer("🌸 *Ara~* This spirit has changed! Please refresh.", show_alert=True)
+        return
+    
+    char = state["characters"][index]
+    char_id = char.get('id')
+    
+    # Check stock
+    stock_entry = await shop_stock_collection.find_one({'character_id': char_id})
+    if not stock_entry or stock_entry.get('stock', 0) <= 0:
+        await callback_query.answer("🌸 *Ara ara~* This spirit is out of stock!", show_alert=True)
+        return
+    
+    # Check user
+    user = await user_collection.find_one({"id": user_id})
+    if not user:
+        await callback_query.answer("🌸 *Oh my~* I don't recognize you!", show_alert=True)
+        return
+    
+    # Calculate price
+    price = RARITY_PRICE.get(char["rarity"], 120000)
+    discount = await get_active_discount()
+    discounted_price = int(price * (100 - discount) / 100)
+    
+    # Check balance
+    if user.get("balance", 0) < discounted_price:
+        needed = discounted_price - user.get("balance", 0)
+        await callback_query.answer(
+            f"🌸 *Ara ara~* You need {needed:,} more wisteria petals!",
+            show_alert=True
+        )
+        return
+    
+    # Check if user already has this character
+    existing_chars = user.get("characters", [])
+    for existing in existing_chars:
+        if existing.get("id") == char_id:
+            await callback_query.answer(
+                "🌸 *Fufufu~* This spirit already resides in your garden!",
+                show_alert=True
+            )
+            return
+    
+    # Decrease stock
+    new_stock = stock_entry['stock'] - 1
+    if new_stock == 0:
+        await shop_stock_collection.delete_one({'character_id': char_id})
+        # Update stock dict in state
+        state["stock_dict"][char_id] = 0
+    else:
+        await shop_stock_collection.update_one(
+            {'character_id': char_id},
+            {'$set': {'stock': new_stock}}
+        )
+        state["stock_dict"][char_id] = new_stock
+    
+    # Deduct petals and add character to user's collection
+    await user_collection.update_one(
+        {"id": user_id},
+        {
+            "$inc": {"balance": -discounted_price},
+            "$push": {"characters": {
+                "_id": ObjectId(),
+                "img_url": char.get("img_url", ""),
+                "name": char.get("name", "Unknown"),
+                "anime": char.get("anime", "Unknown"),
+                "rarity": char.get("rarity", "Premium"),
+                "id": char_id
+            }}
+        }
+    )
+    
+    # Get updated balance
+    updated_user = await user_collection.find_one({"id": user_id})
+    new_balance = updated_user.get("balance", 0) if updated_user else 0
+    
+    # Update state balance
+    state["balance"] = new_balance
+    
+    # Success message
+    await callback_query.answer(
+        f"🌸 *Wonderful!* {char.get('name', 'Unknown')} has joined your garden! 🦋",
+        show_alert=True
+    )
+    
+    # Update the displayed character with new balance
+    await display_shop_character(client, callback_query.message, user_id, is_initial=False, callback_query=callback_query)
+    
+    # Log the purchase
+    await PLOG(
+        f"🌸 **[SHOP PURCHASE]**\n"
+        f"👤 **User:** {callback_query.from_user.first_name} (`{user_id}`)\n"
+        f"🆔 **Character:** {char.get('name', 'Unknown')} (`{char_id}`)\n"
+        f"🌸 **Price:** {discounted_price:,} petals\n"
+        f"📦 **Remaining Stock:** {new_stock}\n"
+        f"📅 **Time:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC"
     )
 
-    # Build keyboard with different colors/indicators
-    claim_button_text = f"🌸 Claim ({discounted_price:,})" if can_afford and stock_count > 0 else f"🔒 Locked ({discounted_price:,})"
+
+# ==========================================
+# SHOP REFRESH CALLBACK
+# ==========================================
+
+@app.on_callback_query(filters.regex(r"^shop_refresh_(\d+)$"))
+async def shop_refresh_callback(client, callback_query):
+    user_id = int(callback_query.matches[0].group(1))
     
-    keyboard = [
-        [
-            InlineKeyboardButton("⬅️ Prev", callback_data="prev_char"),
-            InlineKeyboardButton(claim_button_text, callback_data=f"claim_{data['index']}"),
-            InlineKeyboardButton("Next ➡️", callback_data="next_char"),
-        ],
-        [
-            InlineKeyboardButton("🔄 Refresh (5,000 petals)", callback_data="refresh_chars"),
-            InlineKeyboardButton("🏠 Back to Bazaar", callback_data="back_to_shop")
-        ]
-    ]
-
-    await msg.delete()
-
-    if is_video(char.get("img_url", "")):
-        await msg.reply_video(
-            video=char["img_url"],
-            caption=caption,
-            reply_markup=InlineKeyboardMarkup(keyboard),
-            parse_mode=ParseMode.MARKDOWN
-        )
-    else:
-        await msg.reply_photo(
-            photo=char.get("img_url", ""),
-            caption=caption,
-            reply_markup=InlineKeyboardMarkup(keyboard),
-            parse_mode=ParseMode.MARKDOWN
-        )
-
-
-# ---------------- NAVIGATION ---------------- #
-
-@app.on_callback_query(filters.regex("^next_char$"))
-async def next_character(client, callback_query):
-    user_id = callback_query.from_user.id
-    state = user_shop_state.get(user_id)
-
-    if not state:
-        return await callback_query.answer("🌸 *Ara~* Your session has expired. Please start from /shop again!", True)
-
-    if state["index"] >= len(state["characters"]) - 1:
-        return await callback_query.answer("🌸 *Fufufu~* That's the last spirit in this rarity!", True)
-
-    state["index"] += 1
-    await show_character(client, callback_query.message, user_id)
-    await callback_query.answer()
-
-
-@app.on_callback_query(filters.regex("^prev_char$"))
-async def prev_character(client, callback_query):
-    user_id = callback_query.from_user.id
-    state = user_shop_state.get(user_id)
-
-    if not state:
-        return await callback_query.answer("🌸 *Ara~* Your session has expired. Please start from /shop again!", True)
-
-    if state["index"] <= 0:
-        return await callback_query.answer("🌸 *Fufufu~* You're already at the first spirit!", True)
-
-    state["index"] -= 1
-    await show_character(client, callback_query.message, user_id)
-    await callback_query.answer()
-
-
-# ---------------- BACK TO SHOP ---------------- #
-
-@app.on_callback_query(filters.regex("^back_to_shop$"))
-async def back_to_shop(client, callback_query):
-    user_id = callback_query.from_user.id
-    user_shop_state.pop(user_id, None)
+    if callback_query.from_user.id != user_id:
+        await callback_query.answer("🌸 *Ara~* This isn't your shop session!", show_alert=True)
+        return
     
-    await callback_query.message.delete()
-    await shop_menu(client, callback_query.message)
-
-
-# ---------------- REFRESH ---------------- #
-
-@app.on_callback_query(filters.regex("^refresh_chars$"))
-async def refresh_characters(client, callback_query):
-    user_id = callback_query.from_user.id
     state = user_shop_state.get(user_id)
-
     if not state:
-        return await callback_query.answer("🌸 *Ara~* Your session has expired. Please start from /shop again!", True)
-
+        await callback_query.answer("🌸 *Ara~* Your session has expired. Please start from /shop again!", show_alert=True)
+        return
+    
     # Check if user has enough petals (5000)
     user = await user_collection.find_one({"id": user_id})
     if not user or user.get("balance", 0) < 5000:
-        return await callback_query.answer("🌸 *Ara ara~* You need 5,000 wisteria petals to refresh the spirits!", True)
-
+        await callback_query.answer(
+            "🌸 *Ara ara~* You need 5,000 wisteria petals to refresh the spirits!",
+            show_alert=True
+        )
+        return
+    
     # Deduct 5000 petals
     await user_collection.update_one({"id": user_id}, {"$inc": {"balance": -5000}})
-
-    # ==========================================
-    # MODIFIED: Fetch ONLY Premium rarity characters with stock
-    # ==========================================
-    premium_rarity = "💸 Premium Edition"
     
-    # Get all Premium characters from main collection
-    all_premium = await collection.find({"rarity": premium_rarity}).to_list(None)
+    # Get fresh Premium characters with stock
+    all_premium = await collection.find({"rarity": PREMIUM_RARITY}).to_list(None)
     
     if not all_premium:
-        await callback_query.answer("🌸 *Ara ara~* No Premium spirits available right now! Please try again later.", True)
+        await callback_query.answer("🌸 *Ara ara~* No Premium spirits available right now!", show_alert=True)
         await user_collection.update_one({"id": user_id}, {"$inc": {"balance": 5000}})
         return
     
@@ -603,139 +681,38 @@ async def refresh_characters(client, callback_query):
         {'character_id': {'$in': character_ids}, 'stock': {'$gt': 0}}
     ).to_list(None)
     
-    # Create a set of character IDs that have stock
-    in_stock_ids = {entry['character_id'] for entry in stock_entries}
+    # Create stock dict
+    stock_dict = {entry['character_id']: entry['stock'] for entry in stock_entries}
     
     # Filter characters to only those in stock
-    characters = [char for char in all_premium if char['id'] in in_stock_ids]
+    characters = [char for char in all_premium if char['id'] in stock_dict]
     
     if not characters:
-        await callback_query.answer("🌸 *Ara ara~* No Premium spirits in stock! Please check back later.", True)
+        await callback_query.answer("🌸 *Ara ara~* No Premium spirits in stock!", show_alert=True)
         await user_collection.update_one({"id": user_id}, {"$inc": {"balance": 5000}})
         return
     
     random.shuffle(characters)
-    state["characters"] = characters[:5]
-    state["index"] = 0
-
-    await callback_query.answer("🌸 *Fufufu~* Premium spirits have arrived! Enjoy~", True)
-    await show_character(client, callback_query.message, user_id)
-
-
-# ---------------- CLAIM ---------------- #
-
-@app.on_callback_query(filters.regex(r"^claim_\d+$"))
-async def claim_character(client, callback_query):
-    _, index_str = safe_split(callback_query.data, "_", 2)
-
-    user_id = callback_query.from_user.id
-    state = user_shop_state.get(user_id)
-
-    if not state:
-        return await callback_query.answer("🌸 *Ara~* Your session has expired. Please start from /shop again!", True)
-
-    char = state["characters"][int(index_str)]
-    char_id = char.get('id')
     
-    user = await user_collection.find_one({"id": user_id})
-
-    if not user:
-        return await callback_query.answer("🌸 *Oh my~* I don't recognize you! Please interact with the bot first.", True)
-
-    # Check stock before allowing purchase
-    stock_entry = await shop_stock_collection.find_one({'character_id': char_id})
-    if not stock_entry or stock_entry.get('stock', 0) <= 0:
-        return await callback_query.answer(
-            "🌸 *Ara ara~* This spirit is out of stock! Please check back later.",
-            True
-        )
-
-    price = RARITY_PRICE.get(char["rarity"], 1000)
-    discount = await get_active_discount()
-    discounted_price = int(price * (100 - discount) / 100)
-
-    # Check if user can afford
-    if user.get("balance", 0) < discounted_price:
-        needed = discounted_price - user.get("balance", 0)
-        return await callback_query.answer(
-            f"🌸 *Ara ara~* You need {needed:,} more wisteria petals! "
-            f"Try /daily, /guess, or /jackpot to earn more!",
-            True
-        )
-
-    # Check if user already has this character
-    existing_chars = user.get("characters", [])
-    for existing in existing_chars:
-        if existing.get("id") == char_id:
-            return await callback_query.answer(
-                "🌸 *Fufufu~* This spirit already resides in your garden! "
-                "Would you like to gift it to a friend instead?",
-                True
-            )
-
-    # Decrease stock
-    new_stock = stock_entry['stock'] - 1
-    if new_stock == 0:
-        # Remove from shop if stock reaches 0
-        await shop_stock_collection.delete_one({'character_id': char_id})
-    else:
-        await shop_stock_collection.update_one(
-            {'character_id': char_id},
-            {'$set': {'stock': new_stock}}
-        )
-
-    # Deduct petals and add character
-    await user_collection.update_one(
-        {"id": user_id},
-        {
-            "$inc": {"balance": -discounted_price},
-            "$push": {"characters": {
-                "_id": ObjectId(),
-                "img_url": char["img_url"],
-                "name": char["name"],
-                "anime": char["anime"],
-                "rarity": char["rarity"],
-                "id": char["id"]
-            }}
-        }
-    )
-
+    # Update state
+    state["characters"] = characters
+    state["stock_dict"] = stock_dict
+    state["index"] = 0
+    
     # Get updated balance
     updated_user = await user_collection.find_one({"id": user_id})
-    new_balance = updated_user.get("balance", 0) if updated_user else 0
-
-    # Rarity-specific celebration message
-    if price >= 100_000:
-        celebration = "👑 **A PREMIUM SPIRIT JOINS YOUR GARDEN!** 👑\n*Truly extraordinary! The garden is blessed!*"
-    elif price >= 50_000:
-        celebration = "💎 **A LUXURIOUS SPIRIT HAS ARRIVED!** 💎\n*Such elegance! The garden shines brighter today!*"
-    elif price >= 25_000:
-        celebration = "🌟 **AN EXQUISITE SPIRIT JOINS YOU!** 🌟\n*What a beautiful addition to your collection!*"
-    else:
-        celebration = "🌸 **A LOVELY SPIRIT HAS ARRIVED!** 🌸\n*Welcome to the garden, dear butterfly!*"
-
-    await callback_query.answer(
-        f"🌸 *Wonderful!* {char['name']} has joined your garden! 🦋",
-        True
-    )
+    state["balance"] = updated_user.get("balance", 0) if updated_user else 0
     
-    # Update the character display to show "Claimed" status
-    emoji = RARITY_EMOJIS.get(char["rarity"], "🌸")
-    await callback_query.message.edit_caption(
-        caption=(
-            f"🌸 *Spirit Claimed!* 🦋\n\n"
-            f"{celebration}\n\n"
-            f"✨ **Name:** {char['name']}\n"
-            f"⛩️ **Anime:** {char['anime']}\n"
-            f"{emoji} **Rarity:** {char['rarity']}\n"
-            f"🌸 **Paid:** {discounted_price:,} wisteria petals\n"
-            f"💳 **New Balance:** {new_balance:,} petals\n"
-            f"📦 **Remaining Stock:** {new_stock}\n\n"
-            f"*Fufufu~* This beautiful spirit is now yours! Treat them well~\n"
-            f"Use /harem to admire your growing collection! 🌸"
-        ),
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton("🏠 Back to Bazaar", callback_data="back_to_shop")],
-            [InlineKeyboardButton("🌸 View Your Garden", switch_inline_query_current_chat=f"collection.{user_id}")]
-        ])
-    )
+    await callback_query.answer("🌸 *Fufufu~* New Premium spirits have arrived! Enjoy~", show_alert=True)
+    
+    # Display first character
+    await display_shop_character(client, callback_query.message, user_id, is_initial=False, callback_query=callback_query)
+
+
+# ==========================================
+# NOOP CALLBACK (for disabled buttons)
+# ==========================================
+
+@app.on_callback_query(filters.regex(r"^shop_noop$"))
+async def shop_noop_callback(client, callback_query):
+    await callback_query.answer()
