@@ -130,6 +130,214 @@ def is_video(url):
     return any(url.lower().endswith(ext) for ext in [".mp4", ".mov", ".webm"])
 
 
+# ==========================================
+# SHOP STOCK MANAGEMENT COLLECTION
+# ==========================================
+
+shop_stock_collection = db['shop_stock']  # Collection for shop inventory
+
+
+# ==========================================
+# COMMAND: /ashop (Owner Only - Add Stock)
+# ==========================================
+
+@app.on_message(filters.command("ashop"))
+async def add_shop_stock(client, message):
+    """
+    Add a character to the shop with specified stock.
+    Usage: /ashop <character_id> <amount>
+    Example: /ashop 12345 4
+    """
+    # Owner-only check
+    if message.from_user.id != OWNER_ID:
+        await message.reply_text("🌸 *Ara ara~* Only the garden keeper can manage the shop inventory!")
+        return
+    
+    args = message.text.split()
+    
+    if len(args) != 3:
+        await message.reply_text(
+            "🌸 **Usage:** `/ashop <character_id> <amount>`\n\n"
+            "**Example:** `/ashop 12345 4`\n"
+            "Adds character ID 12345 to the shop with 4 stock."
+        )
+        return
+    
+    character_id = args[1]
+    
+    try:
+        amount = int(args[2])
+        if amount <= 0:
+            await message.reply_text("🌸 *Fufufu~* Amount must be a positive number!")
+            return
+        if amount > 999:
+            await message.reply_text("🌸 *Ara~* Maximum stock per character is 999!")
+            return
+    except ValueError:
+        await message.reply_text("🌸 *Ara ara~* Please enter a valid number for the amount!")
+        return
+    
+    # Check if character exists in main collection
+    character = await collection.find_one({'id': character_id})
+    if not character:
+        await message.reply_text(f"🌸 *Ara ara~* Character with ID `{character_id}` not found in the garden!")
+        return
+    
+    # Check if character is Premium rarity (shop requirement)
+    if character.get('rarity') != "💸 Premium Edition":
+        await message.reply_text(
+            f"🌸 *Fufufu~* Character `{character['name']}` has rarity `{character.get('rarity', 'Unknown')}`.\n"
+            f"The shop only accepts Premium Edition spirits!"
+        )
+        return
+    
+    # Check if character already exists in shop stock
+    existing_stock = await shop_stock_collection.find_one({'character_id': character_id})
+    
+    if existing_stock:
+        # Update existing stock
+        new_amount = existing_stock['stock'] + amount
+        await shop_stock_collection.update_one(
+            {'character_id': character_id},
+            {'$set': {'stock': new_amount}}
+        )
+        await message.reply_text(
+            f"🌸 **Stock Updated!**\n\n"
+            f"✨ **Character:** {character['name']}\n"
+            f"🆔 **ID:** `{character_id}`\n"
+            f"📦 **Previous Stock:** {existing_stock['stock']}\n"
+            f"➕ **Added:** +{amount}\n"
+            f"📊 **New Stock:** {new_amount}\n\n"
+            f"*Fufufu~* The spirit now has more presence in the bazaar!"
+        )
+    else:
+        # Create new stock entry
+        await shop_stock_collection.insert_one({
+            'character_id': character_id,
+            'character_data': character,  # Store full character data
+            'stock': amount,
+            'added_by': message.from_user.id,
+            'added_at': datetime.utcnow(),
+            'last_updated': datetime.utcnow()
+        })
+        await message.reply_text(
+            f"🌸 **Character Added to Shop!**\n\n"
+            f"✨ **Character:** {character['name']}\n"
+            f"⛩️ **Anime:** {character.get('anime', 'Unknown')}\n"
+            f"🌟 **Rarity:** {character.get('rarity', 'Premium')}\n"
+            f"🆔 **ID:** `{character_id}`\n"
+            f"📦 **Stock:** {amount}\n\n"
+            f"*Fufufu~* A new spirit has arrived in the bazaar!"
+        )
+    
+    # Log the addition
+    await PLOG(
+        f"🌸 **[SHOP STOCK ADDED]**\n"
+        f"👤 **Owner:** {message.from_user.first_name} (`{message.from_user.id}`)\n"
+        f"🆔 **Character ID:** `{character_id}`\n"
+        f"📦 **Amount Added:** +{amount}\n"
+        f"📅 **Time:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC"
+    )
+
+
+# ==========================================
+# COMMAND: /rshop (Owner Only - Remove Stock)
+# ==========================================
+
+@app.on_message(filters.command("rshop"))
+async def remove_shop_stock(client, message):
+    """
+    Remove stock from a character in the shop.
+    Usage: /rshop <character_id> <amount>
+    Example: /rshop 12345 2
+    """
+    # Owner-only check
+    if message.from_user.id != OWNER_ID:
+        await message.reply_text("🌸 *Ara ara~* Only the garden keeper can manage the shop inventory!")
+        return
+    
+    args = message.text.split()
+    
+    if len(args) != 3:
+        await message.reply_text(
+            "🌸 **Usage:** `/rshop <character_id> <amount>`\n\n"
+            "**Example:** `/rshop 12345 2`\n"
+            "Removes 2 stock from character ID 12345."
+        )
+        return
+    
+    character_id = args[1]
+    
+    try:
+        amount = int(args[2])
+        if amount <= 0:
+            await message.reply_text("🌸 *Fufufu~* Amount must be a positive number!")
+            return
+    except ValueError:
+        await message.reply_text("🌸 *Ara ara~* Please enter a valid number for the amount!")
+        return
+    
+    # Check if character exists in shop stock
+    existing_stock = await shop_stock_collection.find_one({'character_id': character_id})
+    
+    if not existing_stock:
+        await message.reply_text(
+            f"🌸 *Ara ara~* Character with ID `{character_id}` is not in the shop inventory!"
+        )
+        return
+    
+    current_stock = existing_stock['stock']
+    character_name = existing_stock.get('character_data', {}).get('name', 'Unknown')
+    new_stock = current_stock - amount
+    
+    if new_stock < 0:
+        await message.reply_text(
+            f"🌸 *Ara ara~* Cannot remove {amount} stock!\n\n"
+            f"✨ **Character:** {character_name}\n"
+            f"📦 **Current Stock:** {current_stock}\n"
+            f"❌ **Requested Removal:** {amount}\n\n"
+            f"*Fufufu~* You can only remove up to {current_stock} stock!"
+        )
+        return
+    
+    if new_stock == 0:
+        # Remove character completely from shop
+        await shop_stock_collection.delete_one({'character_id': character_id})
+        await message.reply_text(
+            f"🌸 **Character Removed from Shop!**\n\n"
+            f"✨ **Character:** {character_name}\n"
+            f"🆔 **ID:** `{character_id}`\n"
+            f"📦 **Stock Removed:** {amount}\n"
+            f"📊 **Remaining Stock:** 0\n\n"
+            f"*Fufufu~* The spirit has been withdrawn from the bazaar."
+        )
+    else:
+        # Update stock
+        await shop_stock_collection.update_one(
+            {'character_id': character_id},
+            {'$set': {'stock': new_stock, 'last_updated': datetime.utcnow()}}
+        )
+        await message.reply_text(
+            f"🌸 **Stock Updated!**\n\n"
+            f"✨ **Character:** {character_name}\n"
+            f"🆔 **ID:** `{character_id}`\n"
+            f"📦 **Previous Stock:** {current_stock}\n"
+            f"➖ **Removed:** -{amount}\n"
+            f"📊 **New Stock:** {new_stock}\n\n"
+            f"*Fufufu~* The spirit's presence has been reduced in the bazaar."
+        )
+    
+    # Log the removal
+    await PLOG(
+        f"🌸 **[SHOP STOCK REMOVED]**\n"
+        f"👤 **Owner:** {message.from_user.first_name} (`{message.from_user.id}`)\n"
+        f"🆔 **Character ID:** `{character_id}`\n"
+        f"📦 **Amount Removed:** -{amount}\n"
+        f"📊 **New Stock:** {new_stock if new_stock > 0 else 'Removed from shop'}\n"
+        f"📅 **Time:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC"
+    )
+
+
 # ---------------- SHOP MENU ---------------- #
 
 @app.on_message(filters.command(["shop", "hshop", "hshopmenu"]))
@@ -187,10 +395,27 @@ async def show_rarity_list(client, callback_query):
     rarity = RARITY_ORDER[int(index_str)]
     user_id = callback_query.from_user.id
 
-    # Get characters of this rarity
-    characters = await collection.find({"rarity": rarity}).to_list(None)
-    if not characters:
+    # Get characters of this rarity that have stock
+    # First, get all characters of this rarity from main collection
+    all_characters = await collection.find({"rarity": rarity}).to_list(None)
+    
+    if not all_characters:
         return await callback_query.answer("🌸 *Ara~* No spirits of this rarity are available right now!", show_alert=True)
+    
+    # Get shop stock for these characters
+    character_ids = [char['id'] for char in all_characters]
+    stock_entries = await shop_stock_collection.find(
+        {'character_id': {'$in': character_ids}, 'stock': {'$gt': 0}}
+    ).to_list(None)
+    
+    # Create a set of character IDs that have stock
+    in_stock_ids = {entry['character_id'] for entry in stock_entries}
+    
+    # Filter characters to only those in stock
+    characters = [char for char in all_characters if char['id'] in in_stock_ids]
+    
+    if not characters:
+        return await callback_query.answer("🌸 *Ara ara~* No spirits of this rarity are currently in stock!", show_alert=True)
 
     random.shuffle(characters)
 
@@ -214,6 +439,11 @@ async def show_rarity_list(client, callback_query):
 async def show_character(client, msg, user_id):
     data = user_shop_state[user_id]
     char = data["characters"][data["index"]]
+    char_id = char.get('id')
+
+    # Get stock information
+    stock_entry = await shop_stock_collection.find_one({'character_id': char_id})
+    stock_count = stock_entry['stock'] if stock_entry else 0
 
     price = RARITY_PRICE.get(char["rarity"], 1000)
     discount = await get_active_discount()
@@ -249,6 +479,7 @@ async def show_character(client, msg, user_id):
         f"{emoji} **Rarity:** {char['rarity']}\n"
         f"🌸 **Price:** {original_price_display} `{discounted_price:,}` wisteria petals"
         f"{f' ({discount}% off!)' if discount > 0 else ''}\n"
+        f"📦 **Stock Available:** `{stock_count}`\n"
         f"💳 **Your Petals:** `{balance:,}`\n"
         f"📊 **Status:** {afford_status}\n"
         f"🏷️ **Tier:** {tier_icon}\n\n"
@@ -258,7 +489,7 @@ async def show_character(client, msg, user_id):
     )
 
     # Build keyboard with different colors/indicators
-    claim_button_text = f"🌸 Claim ({discounted_price:,})" if can_afford else f"🔒 Locked ({discounted_price:,})"
+    claim_button_text = f"🌸 Claim ({discounted_price:,})" if can_afford and stock_count > 0 else f"🔒 Locked ({discounted_price:,})"
     
     keyboard = [
         [
@@ -353,14 +584,41 @@ async def refresh_characters(client, callback_query):
     # Deduct 5000 petals
     await user_collection.update_one({"id": user_id}, {"$inc": {"balance": -5000}})
 
-    # Fetch new characters
-    rarity = state["rarity"]
-    characters = await collection.find({"rarity": rarity}).to_list(None)
+    # ==========================================
+    # MODIFIED: Fetch ONLY Premium rarity characters with stock
+    # ==========================================
+    premium_rarity = "💸 Premium Edition"
+    
+    # Get all Premium characters from main collection
+    all_premium = await collection.find({"rarity": premium_rarity}).to_list(None)
+    
+    if not all_premium:
+        await callback_query.answer("🌸 *Ara ara~* No Premium spirits available right now! Please try again later.", True)
+        await user_collection.update_one({"id": user_id}, {"$inc": {"balance": 5000}})
+        return
+    
+    # Get shop stock for Premium characters
+    character_ids = [char['id'] for char in all_premium]
+    stock_entries = await shop_stock_collection.find(
+        {'character_id': {'$in': character_ids}, 'stock': {'$gt': 0}}
+    ).to_list(None)
+    
+    # Create a set of character IDs that have stock
+    in_stock_ids = {entry['character_id'] for entry in stock_entries}
+    
+    # Filter characters to only those in stock
+    characters = [char for char in all_premium if char['id'] in in_stock_ids]
+    
+    if not characters:
+        await callback_query.answer("🌸 *Ara ara~* No Premium spirits in stock! Please check back later.", True)
+        await user_collection.update_one({"id": user_id}, {"$inc": {"balance": 5000}})
+        return
+    
     random.shuffle(characters)
     state["characters"] = characters[:5]
     state["index"] = 0
 
-    await callback_query.answer("🌸 *Fufufu~* New spirits have arrived! Enjoy~", True)
+    await callback_query.answer("🌸 *Fufufu~* Premium spirits have arrived! Enjoy~", True)
     await show_character(client, callback_query.message, user_id)
 
 
@@ -377,10 +635,20 @@ async def claim_character(client, callback_query):
         return await callback_query.answer("🌸 *Ara~* Your session has expired. Please start from /shop again!", True)
 
     char = state["characters"][int(index_str)]
+    char_id = char.get('id')
+    
     user = await user_collection.find_one({"id": user_id})
 
     if not user:
         return await callback_query.answer("🌸 *Oh my~* I don't recognize you! Please interact with the bot first.", True)
+
+    # Check stock before allowing purchase
+    stock_entry = await shop_stock_collection.find_one({'character_id': char_id})
+    if not stock_entry or stock_entry.get('stock', 0) <= 0:
+        return await callback_query.answer(
+            "🌸 *Ara ara~* This spirit is out of stock! Please check back later.",
+            True
+        )
 
     price = RARITY_PRICE.get(char["rarity"], 1000)
     discount = await get_active_discount()
@@ -398,12 +666,23 @@ async def claim_character(client, callback_query):
     # Check if user already has this character
     existing_chars = user.get("characters", [])
     for existing in existing_chars:
-        if existing.get("id") == char["id"]:
+        if existing.get("id") == char_id:
             return await callback_query.answer(
                 "🌸 *Fufufu~* This spirit already resides in your garden! "
                 "Would you like to gift it to a friend instead?",
                 True
             )
+
+    # Decrease stock
+    new_stock = stock_entry['stock'] - 1
+    if new_stock == 0:
+        # Remove from shop if stock reaches 0
+        await shop_stock_collection.delete_one({'character_id': char_id})
+    else:
+        await shop_stock_collection.update_one(
+            {'character_id': char_id},
+            {'$set': {'stock': new_stock}}
+        )
 
     # Deduct petals and add character
     await user_collection.update_one(
@@ -450,7 +729,8 @@ async def claim_character(client, callback_query):
             f"⛩️ **Anime:** {char['anime']}\n"
             f"{emoji} **Rarity:** {char['rarity']}\n"
             f"🌸 **Paid:** {discounted_price:,} wisteria petals\n"
-            f"💳 **New Balance:** {new_balance:,} petals\n\n"
+            f"💳 **New Balance:** {new_balance:,} petals\n"
+            f"📦 **Remaining Stock:** {new_stock}\n\n"
             f"*Fufufu~* This beautiful spirit is now yours! Treat them well~\n"
             f"Use /harem to admire your growing collection! 🌸"
         ),
