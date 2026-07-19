@@ -27,6 +27,17 @@ RARITY_PRICE = {
     "💮 Special Edition": 50_000,  # 50K - Special blooms
     "🔮 Limited Edition": 75_000,  # 75K - Limited treasures
     "💸 Premium Edition": 120_000, # 120K - Premium garden guests 🌸
+    "🌤 Summer": 20_000,           # 20K - Summer spirits
+    "🎐 Celestial": 80_000,        # 80K - Celestial beings
+    "❄️ Winter": 25_000,           # 25K - Winter souls
+    "💝 Valentine": 35_000,        # 35K - Valentine's spirits
+    "🎃 Halloween": 40_000,        # 40K - Halloween guests
+    "🎄 Christmas Special": 45_000,# 45K - Christmas spirits
+    "🧧 Events": 55_000,           # 55K - Event exclusives
+    "🍑 Echhi": 60_000,            # 60K - Eccentric spirits
+    "🎗️ AMV Edition": 70_000,      # 70K - AMV collectors
+    "🌧 Rainy": 25_000,            # 25K - Rainy day spirits
+    "🫧 Aquatic": 65_000,          # 65K - Aquatic spirits 🌊
 }
 
 RARITY_EMOJIS = {
@@ -37,6 +48,17 @@ RARITY_EMOJIS = {
     "💮 Special Edition": "💮",
     "🔮 Limited Edition": "🔮",
     "💸 Premium Edition": "💸",
+    "🌤 Summer": "🌤",
+    "🎐 Celestial": "🎐",
+    "❄️ Winter": "❄️",
+    "💝 Valentine": "💝",
+    "🎃 Halloween": "🎃",
+    "🎄 Christmas Special": "🎄",
+    "🧧 Events": "🧧",
+    "🍑 Echhi": "🍑",
+    "🎗️ AMV Edition": "🎗️",
+    "🌧 Rainy": "🌧",
+    "🫧 Aquatic": "🫧",
 }
 
 # Shinobu's elegant rarity descriptions
@@ -48,6 +70,17 @@ RARITY_DESCRIPTIONS = {
     "💮 Special Edition": "A rare bloom that appears only during special seasons—cherish it.",
     "🔮 Limited Edition": "A treasure from beyond the veil—once it's gone, it's gone forever.",
     "💸 Premium Edition": "The crown jewel of the garden—only the most dedicated collectors may obtain this spirit.",
+    "🌤 Summer": "A warm soul that basks in the golden sunlight—radiant and full of life.",
+    "🎐 Celestial": "A being from the stars above—ethereal and touched by cosmic beauty.",
+    "❄️ Winter": "A frost-kissed spirit with a calm, serene presence—cold yet captivating.",
+    "💝 Valentine": "A heart-shaped soul that radiates love and affection—perfect for romantics.",
+    "🎃 Halloween": "A mischievous spirit that appears during the witching hour—playful and eerie.",
+    "🎄 Christmas Special": "A festive soul that brings holiday cheer—wrapped in warmth and joy.",
+    "🧧 Events": "A rare spirit that only appears during special celebrations—cherish the moment.",
+    "🍑 Echhi": "A cheeky, eccentric spirit with a playful demeanor—unpredictable but lovable.",
+    "🎗️ AMV Edition": "A collectible spirit for true connoisseurs—admired for its artistic essence.",
+    "🌧 Rainy": "A melancholy soul that weeps with the clouds—poetic and introspective.",
+    "🫧 Aquatic": "A shimmering spirit from the deep—fluid, graceful, and full of mystery. 🌊",
 }
 
 # ---------------- RARITY ORDER FOR DISPLAY ---------------- #
@@ -55,11 +88,22 @@ RARITY_DESCRIPTIONS = {
 RARITY_ORDER = [
     "⚪️ Common",
     "🟣 Rare",
-    "🟢 Medium",
     "🟡 Legendary",
+    "🟢 Medium",
     "💮 Special Edition",
     "🔮 Limited Edition",
     "💸 Premium Edition",
+    "🌤 Summer",
+    "🎐 Celestial",
+    "❄️ Winter",
+    "💝 Valentine",
+    "🎃 Halloween",
+    "🎄 Christmas Special",
+    "🧧 Events",
+    "🍑 Echhi",
+    "🎗️ AMV Edition",
+    "🌧 Rainy",
+    "🫧 Aquatic",
 ]
 
 # Premium rarity only for shop
