@@ -4,11 +4,11 @@
 # GitHub: https://github.com/MrZyro
 # ==========================================
 
-# TEAMZYRO/help.py
+# TEAMZYRO/unit/zyro_help.py
 
 HELP_DATA = {
     "balance": {
-        "HELP_NAME": "Bᴀʟ Aɴᴅ Pᴀʏ",
+        "HELP_NAME": "💰 Balance & Pay",
         "HELP": """
 💰 **Balance Commands**:
 - `/balance` → Check your balance.
@@ -20,13 +20,13 @@ HELP_DATA = {
 - `/pay amount user_id` → Send coins using user ID.
 - `/pay amount` (reply to a user) → Send coins to the replied user.
 
-⚠ **Note**:
+⚠️ **Note**:
 - You must have enough balance to send coins.
 - Payments are final and cannot be reversed.
 """
     },
     "check": {
-        "HELP_NAME": "Cʜᴇᴄᴋ",
+        "HELP_NAME": "🔍 Check",
         "HELP": """
 Use `/check <character_id>` to view details of a character.
 
@@ -36,7 +36,7 @@ Use `/check <character_id>` to view details of a character.
 """
     },
     "guess": {
-        "HELP_NAME": "Gᴜᴇss",
+        "HELP_NAME": "🎯 Guess",
         "HELP": """
 Use `/guess <character_name>` to guess the mystery character.
 
@@ -47,20 +47,20 @@ Use `/guess <character_name>` to guess the mystery character.
 """
     },
     "harem": {
-        "HELP_NAME": "Hᴀʀᴇᴍ",
+        "HELP_NAME": "🌸 Harem",
         "HELP": """
 Use `/harem` or `/collection` to view your collected characters.
 
 - Navigate pages using the buttons.
 - Filter by rarity using the filter button.
 - Use "Collection" button for detailed inline view.
-- "💌 AMV" button shows a video-only collection.
+- "💜 AMV" button shows a video-only collection.
 
 Characters are grouped by anime and show the count you own.
 """
     },
     "inline": {
-        "HELP_NAME": "Iɴʟɪɴᴇ",
+        "HELP_NAME": "🔎 Inline",
         "HELP": """
 Use inline queries to search for characters or view collections.
 
@@ -73,7 +73,7 @@ Results include character name, anime, rarity, and image/video.
 """
     },
     "favorites": {
-        "HELP_NAME": "Fᴀᴠᴏʀɪᴛᴇs",
+        "HELP_NAME": "⭐ Favorites",
         "HELP": """
 Add your favorite characters to your collection.
 
@@ -85,7 +85,7 @@ Note: You can only favorite characters that are in your collection.
 """
     },
     "claim": {
-        "HELP_NAME": "Cʟᴀɪᴍ",
+        "HELP_NAME": "🎁 Claim",
         "HELP": """
 Claim a free character every day! 🌟
 
@@ -96,26 +96,15 @@ Claim a free character every day! 🌟
 - Return tomorrow for another claim! 🌸
 """
     },
-    "requests": {
-        "HELP_NAME": "Rᴇǫᴜᴇsᴛs",
-        "HELP": """
-Use the following command to request a character:
-
-Request a Character  
-`/reqchar <character_id>` - Request a specific character by ID.
-
-Once requested, the owner will review and approve or deny your request.
-"""
-    },
     "gift": {
-        "HELP_NAME": "Gɪғᴛ",
+        "HELP_NAME": "🎁 Gift",
         "HELP": """
 🎁 **Gift System**  
 Send characters to other users using the `/gift` command.
 
 **Commands:**
 - `/gift <character_id>` (Reply to a user's message)  
-  ┗ Gift a character to another user.
+  → Gift a character to another user.
 
 **How it works:**
 1. Reply to a user's message.
@@ -125,14 +114,14 @@ Send characters to other users using the `/gift` command.
 """
     },
     "jackpot": {
-        "HELP_NAME": "Jᴀᴄᴋᴘᴏᴛ",
+        "HELP_NAME": "🎰 Jackpot",
         "HELP": """
 🎰 **Jackpot Game**  
 Try your luck with the jackpot and win coins!
 
 **Commands:**
 - `/jackpot`  
-  ┗ Roll the slot machine and earn coins.
+  → Roll the slot machine and earn coins.
 
 **How it works:**
 1. You can play twice per day.
@@ -144,14 +133,14 @@ Try your luck with the jackpot and win coins!
 """
     },
     "rankings": {
-        "HELP_NAME": "Rᴀɴᴋɪɴɢs",
+        "HELP_NAME": "🏆 Rankings",
         "HELP": """
 🏆 **Rankings & Leaderboards**  
 Check out the top users and groups in different categories!
 
 **Commands:**
 - `/rank`  
-  ┗ View the Top 10 Users with the most characters.
+  → View the Top 10 Users with the most characters.
 
 **Categories:**
 1. **Top Users** → Users with the highest number of characters.
@@ -165,7 +154,7 @@ Check out the top users and groups in different categories!
 """
     },
     "sips": {
-        "HELP_NAME": "Sɪᴘs",
+        "HELP_NAME": "🔍 Sips",
         "HELP": """
 Use this command to search for characters by name.
 
@@ -181,7 +170,7 @@ Each result includes:
 """
     },
     "shop": {
-        "HELP_NAME": "Sʜᴏᴘ",
+        "HELP_NAME": "🛒 Shop",
         "HELP": """
 🛒 Shop Commands:
 - /shop - Open the shop menu.
@@ -189,7 +178,7 @@ Each result includes:
 - /hshop - Another way to access the shop.
 - /addshop <id> <price> - Add a character to the shop (Admin only).
 
-🛍 How It Works:
+🛍️ How It Works:
 1. Use /shop to browse characters.
 2. Click "Buy" to purchase a character.
 3. Click "Next" to view more characters.
@@ -199,7 +188,7 @@ Each result includes:
 """
     },
     "coinflip": {
-        "HELP_NAME": "Cᴏɪɴғʟɪᴘ",
+        "HELP_NAME": "🪙 Coinflip",
         "HELP": """
 🪙 **Coinflip Betting Game** 🪙
 
@@ -214,7 +203,7 @@ Each result includes:
 """
     },
     "slots": {
-        "HELP_NAME": "Sʟᴏᴛs",
+        "HELP_NAME": "🎰 Slots",
         "HELP": """
 🎰 **Slot Machine Game** 🎰
 
@@ -224,7 +213,7 @@ Each result includes:
 
 🏆 **Payouts:**
 - 3 matching emojis → **5x payout**! (e.g. [ 💎 | 💎 | 💎 ])
-- 2 matching emojis → **1.5x payout**! (e.g. [ 🍒 | 🍇 | 🍒 ])
+- 2 matching emojis → **1.5x payout**! (e.g. [ 🍒 | 🍋 | 🍒 ])
 - 0 matching emojis → Bet is lost.
 
 📝 **Limits:**
@@ -233,7 +222,7 @@ Each result includes:
 """
     },
     "hl": {
-        "HELP_NAME": "Hɪɢʜ Lᴏᴡ",
+        "HELP_NAME": "🃏 High Low",
         "HELP": """
 🃏 **Higher or Lower Card Game** 🃏
 
@@ -256,7 +245,7 @@ Each result includes:
 """
     },
     "blackjack": {
-        "HELP_NAME": "Bʟᴀᴄᴋᴊᴀᴄᴋ",
+        "HELP_NAME": "🃏 Blackjack",
         "HELP": """
 🃏 **Blackjack Table Game** 🃏
 
@@ -277,7 +266,7 @@ Each result includes:
 """
     },
     "wheel": {
-        "HELP_NAME": "Wʜᴇᴇʟ",
+        "HELP_NAME": "🎡 Wheel",
         "HELP": """
 🎡 **Wheel of Fortune Spin** 🎡
 
@@ -299,7 +288,7 @@ Each result includes:
 """
     },
     "new_char": {
-        "HELP_NAME": "Nᴇᴡ Cʜᴀʀ",
+        "HELP_NAME": "📝 New Character",
         "HELP": """
 ➤ /addchar character-name anime-name - Upload a character request with an image.
 ➤ /upload (or /gupload) character-name anime-name rarity-number - Upload and add a character directly (Admins only).
@@ -314,13 +303,18 @@ Admins can approve or reject the request using the provided buttons.
 - 🟢 Medium
 - 💮 Special Edition
 - 🔮 Limited Edition
+- 💸 Premium Edition
+- 🌤 Summer
 - 🎐 Celestial
-- 💖 Valentine
-- 🎃 Halloween
 - ❄️ Winter
+- 💝 Valentine
+- 🎃 Halloween
+- 🎄 Christmas Special
+- 🧧 Events
+- 🍑 Echhi
+- 🎗️ AMV Edition
 - 🌧 Rainy
-- 💸 Expensive
-- 👑 V. I. P.
+- 🫧 Aquatic
 
 ➤ Admin Commands:
 - Approve a pending character request.
@@ -330,15 +324,15 @@ Make sure to reply with an image when using /addchar or /upload!
 """
     },
     "transfer": {
-        "HELP_NAME": "Tʀᴀɴsғᴇʀ",
+        "HELP_NAME": "📦 Transfer",
         "HELP": """
 📦 **Character Transfer System** (VIP Only)
 
 **Commands:**
 - `/transfer <user_id> <owner_id>` 
-  ┗ Start a secure character transfer from a user to a receiver owner.
+  → Start a secure character transfer from a user to a receiver owner.
 - `/backtransfer <transfer_id>` (or `/untransfer` / `/trback`)
-  ┗ Rollback and revert a completed transfer (valid for up to 1 hour).
+  → Rollback and revert a completed transfer (valid for up to 1 hour).
 
 **How it works:**
 1. A VIP user initiates the transfer with `/transfer <user_id> <owner_id>`.
@@ -349,15 +343,15 @@ Make sure to reply with an image when using /addchar or /upload!
 """
     },
     "bounty": {
-        "HELP_NAME": "Bᴏᴜɴᴛʏ",
+        "HELP_NAME": "🏴‍☠️ Bounty",
         "HELP": """
 🏴‍☠️ **Wanted Bounty Poster Generator**
 
 **Commands:**
 - `/bounty` 
-  ┗ Generate your custom One Piece-style Wanted Poster showing your balance as your bounty!
+  → Generate your custom One Piece-style Wanted Poster showing your balance as your bounty!
 - `/bounty @username` (or reply / user_id)
-  ┗ View the wanted poster and bounty details of another user.
+  → View the wanted poster and bounty details of another user.
 
 **How it works:**
 1. Your Telegram profile picture is cropped and framed inside the poster.
@@ -366,13 +360,13 @@ Make sure to reply with an image when using /addchar or /upload!
 """
     },
     "mines": {
-        "HELP_NAME": "Mɪɴᴇs",
+        "HELP_NAME": "💣 Mines",
         "HELP": """
-🎮 **Minesweeper Casino** 🎮
+💣 **Minesweeper Casino** 💣
 
 **Commands:**
 - `/mines [bet_amount] [mine_count]` 
-  ┗ Start a new Minesweeper game with custom bet and mine risk.
+  → Start a new Minesweeper game with custom bet and mine risk.
 
 **Limits:**
 - Bet amount: 500 to 100,000 coins (Default: 1000)
@@ -390,21 +384,21 @@ Make sure to reply with an image when using /addchar or /upload!
 """
     },
     "ox": {
-        "HELP_NAME": "Tɪᴄ Tᴀᴄ Tᴏᴇ",
+        "HELP_NAME": "⭕ Tic Tac Toe",
         "HELP": """
-🎮 **Tic Tac Toe (O/X) Betting** 🎮
+⭕ **Tic Tac Toe (O/X) Betting** ⭕
 
 **Commands:**
 - `/ox <bet>` 
-  ┗ Host a new game lobby with the specified bet.
+  → Host a new game lobby with the specified bet.
 - `/oxstats` 
-  ┗ Check your Tic Tac Toe statistics.
+  → Check your Tic Tac Toe statistics.
 - `/oxstats @username` (or user_id)
-  ┗ Check another player's statistics.
+  → Check another player's statistics.
 - `/oxtop` 
-  ┗ View the leaderboard of top players.
+  → View the leaderboard of top players.
 - `/oxactive` 
-  ┗ See the number of active games in progress.
+  → See the number of active games in progress.
 
 **Game Rules:**
 1. **Lobby & Join**: Host sets a bet (100 to 100,000 coins). Another player clicks **Join Game** to match the bet.
@@ -415,17 +409,13 @@ Make sure to reply with an image when using /addchar or /upload!
 6. **AFK Protection**: Exceeding the 2-minute timer on your turn triggers an automatic loss, awarding the win to your opponent.
 7. **Auto-Cancellation**: If a lobby remains empty for **5 minutes**, it is cancelled automatically and the host is refunded.
 """
-    }
-}
-
-# Add this to the HELP_DATA dictionary in zyro_help.py
-# Place it with the other help entries
-
-"demonslayer": {
-    "HELP_NAME": "⚔️ Demon Slayer",
-    "HELP": """
+    },
+    "demonslayer": {
+        "HELP_NAME": "⚔️ Demon Slayer",
+        "HELP": """
 🌸 **DEMON SLAYER RPG** 🌸
 
+**Commands:**
 / **demonslayer** - Start or view your RPG journey
 / **hunt** - Hunt demons for XP and trophies
 / **dprofile** - View your detailed profile
@@ -463,4 +453,5 @@ Each Hashira grants unique passive abilities!
 - Monthly seasons with leaderboard
 - Reward milestones at 100/250/500/1000 trophies
 """
+    }
 }
