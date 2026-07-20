@@ -417,3 +417,50 @@ Make sure to reply with an image when using /addchar or /upload!
 """
     }
 }
+
+# Add this to the HELP_DATA dictionary in zyro_help.py
+# Place it with the other help entries
+
+"demonslayer": {
+    "HELP_NAME": "⚔️ Demon Slayer",
+    "HELP": """
+🌸 **DEMON SLAYER RPG** 🌸
+
+/ **demonslayer** - Start or view your RPG journey
+/ **hunt** - Hunt demons for XP and trophies
+/ **dprofile** - View your detailed profile
+/ **inv** - Check your inventory and progress
+/ **challenge** - Challenge another player to PvP
+/ **dtop** - View monthly leaderboard
+/ **missions** - View your active missions
+/ **achievements** - Track your achievements
+/ **dailyhunt** - Claim daily rewards
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+**🦋 Hashira Selection**
+Choose your mentor from 9 Hashiras:
+Shinobu, Giyu, Rengoku, Muichiro, Mitsuri,
+Sanemi, Obanai, Gyomei, Tengen
+
+Each Hashira grants unique passive abilities!
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+**⚔️ Battle System**
+- Fight demons with interactive combat
+- Attack, defend, and use critical hits
+- Earn XP, Trophies, and Petals
+- Level up and increase your stats
+- Progress through 11 ranks to become Hashira
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+**🏆 Features**
+- PvP battles with other slayers
+- Daily rewards and missions
+- Achievement tracking
+- Monthly seasons with leaderboard
+- Reward milestones at 100/250/500/1000 trophies
+"""
+}
