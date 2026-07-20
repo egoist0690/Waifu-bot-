@@ -330,7 +330,7 @@ async def show_hashira_selection(client, message, user_id):
     )
     
     await message.reply_photo(
-        photo="https://files.catbox.moe/demonslayer_banner.jpg",
+        photo="https://files.catbox.moe/sf2wm1.png",
         caption=caption,
         reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode=enums.ParseMode.HTML
