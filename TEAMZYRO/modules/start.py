@@ -1,9 +1,3 @@
-# ==========================================
-# Creator: MrZyro
-# Telegram: @MrZyro_dev
-# GitHub: https://github.com/MrZyro
-# ==========================================
-
 import os
 import importlib.util
 import random
@@ -30,40 +24,44 @@ async def generate_start_message(client, message):
     bot_name = bot_user.first_name
     ping = round(time.time() - message.date.timestamp(), 2)
     uptime = get_uptime()
-    
+
     caption = (
-        f"🦋 <b>Ara ara~ Welcome to the Butterfly Mansion!</b> 🌸\n\n"
-        f"<i>I am {bot_name}. It seems you've wandered straight into my laboratory. Don't worry, the fresh wisteria fragrance will keep you safe from any nasty demons here.</i>\n\n"
+        f"🦋 <b>ᴀʀᴀ ᴀʀᴀ~ ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴛʜᴇ ʙᴜᴛᴛᴇʀғʟʏ ᴍᴀɴsɪᴏɴ!</b> 🌸\n\n"
+        f"<i>ɪ ᴀᴍ {bot_name}. ɪᴛ sᴇᴇᴍs ʏᴏᴜ'ᴠᴇ ᴡᴀɴᴅᴇʀᴇᴅ sᴛʀᴀɪɢʜᴛ ɪɴᴛᴏ ᴍʏ ʟᴀʙᴏʀᴀᴛᴏʀʏ. ᴅᴏɴ'ᴛ ᴡᴏʀʀʏ, ᴛʜᴇ ғʀᴇsʜ ᴡɪsᴛᴇʀɪᴀ ғʀᴀɢʀᴀɴᴄᴇ ᴡɪʟʟ ᴋᴇᴇᴘ ʏᴏᴜ sᴀғᴇ ғʀᴏᴍ ᴀɴʏ ɴᴀsᴛʏ ᴅᴇᴍᴏɴs ʜᴇʀᴇ.</i>\n\n"
         f"<blockquote>━━━━━━━▧▣▧━━━━━━━\n"
-        f"⦾ <b>MISSION:</b> I track down roaming Slayers and trap wandering Demons in your chats.\n"
-        f"⦾ <b>TRAINING:</b> Add me to your group and use /help to read my custom training manuals.\n"
+        f"⦾ <b>ᴍɪssɪᴏɴ:</b> ɪ ᴛʀᴀᴄᴋ ᴅᴏᴡɴ ʀᴏᴀᴍɪɴɢ sʟᴀʏᴇʀs ᴀɴᴅ ᴛʀᴀᴘ ᴡᴀɴᴅᴇʀɪɴɢ ᴅᴇᴍᴏɴs ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛs.\n"
+        f"⦾ <b>ᴛʀᴀɪɴɪɴɢ:</b> ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴀɴᴅ ᴜsᴇ /help ᴛᴏ ʀᴇᴀᴅ ᴍʏ ᴄᴜsᴛᴏᴍ ᴛʀᴀɪɴɪɴɢ ᴍᴀɴᴜᴀʟs.\n"
         f"━━━━━━━▧▣▧━━━━━━━\n"
-        f"⚡ <b>PULSE:</b> {ping} ms\n"
-        f"⏳ <b>REST ZONE:</b> {uptime}</blockquote>"
+        f"⚡ <b>ᴘᴜʟsᴇ:</b> {ping} ᴍs\n"
+        f"⏳ <b>ʀᴇsᴛ ᴢᴏɴᴇ:</b> {uptime}</blockquote>"
     )
 
     buttons = [
-        [InlineKeyboardButton("🦋 Deploy To Your Squad ", url=f"https://t.me/{bot_user.username}?startgroup=true")],
-        [InlineKeyboardButton("💜 Support Mansion", url="https://t.me/+fPjchISAGnc3OGJl")], 
-        [InlineKeyboardButton("📢 Laboratory", url="https://t.me/+wjJbHQ9DQzM1OTE1")],
-        [InlineKeyboardButton("🧪 Training Manual", callback_data="open_help")],
-        [InlineKeyboardButton("Owner", url=f"https://t.me/EGOIST_6969")],
+        [InlineKeyboardButton("🦋 ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", url=f"https://t.me/{bot_user.username}?startgroup=true")],
+        [
+            InlineKeyboardButton("💜 sᴜᴘᴘᴏʀᴛ", url="https://t.me/+fPjchISAGnc3OGJl"),
+            InlineKeyboardButton("📢 ᴜᴘᴅᴀᴛᴇs", url="https://t.me/+wjJbHQ9DQzM1OTE1")
+        ],
+        [
+            InlineKeyboardButton("🧪 ʜᴇʟᴘ", callback_data="open_help"),
+            InlineKeyboardButton("👤 ᴏᴡɴᴇʀ", url=f"https://t.me/EGOIST_6969")
+        ]
     ]
-    
+
     return caption, buttons
 
 # 🔹 Function to Generate Group Start Message & Buttons (Shinobu Custom Design)
 async def generate_group_start_message(client):
     bot_user = await client.get_me()
     caption = (
-        f"🦋 <i>Flap, flap... I am</i> <b>{bot_user.first_name}</b> 🌸\n\n"
-        f"<blockquote>I am currently monitoring this chat area to detect and expose hidden demons through message flows.\n\n"
-        f"Use /help to access my specialized medical and combat manuals!</i></blockquote>"
+        f"🦋 <i>ғʟᴀᴘ, ғʟᴀᴘ... ɪ ᴀᴍ</i> <b>{bot_user.first_name}</b> 🌸\n\n"
+        f"<blockquote>ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴍᴏɴɪᴛᴏʀɪɴɢ ᴛʜɪs ᴄʜᴀᴛ ᴀʀᴇᴀ ᴛᴏ ᴅᴇᴛᴇᴄᴛ ᴀɴᴅ ᴇxᴘᴏsᴇ ʜɪᴅᴅᴇɴ ᴅᴇᴍᴏɴs ᴛʜʀᴏᴜɢʜ ᴍᴇssᴀɢᴇ ғʟᴏᴡs.\n\n"
+        f"ᴜsᴇ /help ᴛᴏ ᴀᴄᴄᴇss ᴍʏ sᴘᴇᴄɪᴀʟɪᴢᴇᴅ ᴍᴇᴅɪᴄᴀʟ ᴀɴᴅ ᴄᴏᴍʙᴀᴛ ᴍᴀɴᴜᴀʟs!</blockquote>"
     )
     buttons = [
         [
-            InlineKeyboardButton("🦋 Summon Me", url=f"https://t.me/{bot_user.username}?startgroup=true"),
-            InlineKeyboardButton("💜 Support", url="https://t.me/+fPjchISAGnc3OGJl")
+            InlineKeyboardButton("💜 sᴜᴘᴘᴏʀᴛ", url="https://t.me/+fPjchISAGnc3OGJl"),
+            InlineKeyboardButton("📢 ᴜᴘᴅᴀᴛᴇs", url="https://t.me/+wjJbHQ9DQzM1OTE1")
         ]
     ]
     return caption, buttons
@@ -81,7 +79,7 @@ async def send_media_message(message, media, caption, buttons):
 @app.on_message(filters.command("start") & filters.private)
 async def start_private_command(client, message):
     existing_user = await user_collection.find_one({"id": message.from_user.id})
-    
+
     if not existing_user:
         user_data = {
             "id": message.from_user.id,
@@ -97,7 +95,7 @@ async def start_private_command(client, message):
 
     await app.send_message(
         chat_id=BOT_LOGGING,
-        text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>sᴜᴅᴏʟɪsᴛ</b>.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
+        text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>ʙᴜᴛᴛᴇʀғʟʏ ᴍᴀɴsɪᴏɴ</b>.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
     )
 
     await send_media_message(message, media, caption, buttons)
@@ -113,7 +111,7 @@ async def start_group_command(client, message):
 def find_help_modules():
     buttons = []
     for module_name, module_data in HELP_DATA.items():
-        button_name = module_data.get("HELP_NAME", "Unknown")
+        button_name = module_data.get("HELP_NAME", "ᴜɴᴋɴᴏᴡɴ")
         buttons.append(InlineKeyboardButton(button_name, callback_data=f"help_{module_name}"))
     return [buttons[i : i + 3] for i in range(0, len(buttons), 3)]
 
@@ -122,12 +120,12 @@ def find_help_modules():
 async def show_help_menu(client, query: CallbackQuery):
     time.sleep(1)
     buttons = find_help_modules()
-    buttons.append([InlineKeyboardButton("⬅️ Return to Mansion", callback_data="back_to_home")])
+    buttons.append([InlineKeyboardButton("⬅️ ʀᴇᴛᴜʀɴ ᴛᴏ ᴍᴀɴsɪᴏɴ", callback_data="back_to_home")])
 
     text = (
-        "⚙️ <b>🦋 BUTTERFLY MANSION HELP MENU</b>\n\n"
-        "<blockquote>Select a target directory below to read our execution manuals and treatment guides.\n\n"
-        "All commands inside must be deployed using the prefix symbol: /</blockquote>"
+        "⚙️ <b>🦋 ʙᴜᴛᴛᴇʀғʟʏ ᴍᴀɴsɪᴏɴ ʜᴇʟᴘ ᴍᴇɴᴜ</b>\n\n"
+        "<blockquote>sᴇʟᴇᴄᴛ ᴀ ᴛᴀʀɢᴇᴛ ᴅɪʀᴇᴄᴛᴏʀʏ ʙᴇʟᴏᴡ ᴛᴏ ʀᴇᴀᴅ ᴏᴜʀ ᴇxᴇᴄᴜᴛɪᴏɴ ᴍᴀɴᴜᴀʟs ᴀɴᴅ ᴛʀᴇᴀᴛᴍᴇɴᴛ ɢᴜɪᴅᴇs.\n\n"
+        "ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ɪɴsɪᴅᴇ ᴍᴜsᴛ ʙᴇ ᴅᴇᴘʟᴏʏᴇᴅ ᴜsɪɴɢ ᴛʜᴇ ᴘʀᴇғɪx sʏᴍʙᴏʟ: /</blockquote>"
     )
 
     try:
@@ -150,11 +148,11 @@ async def show_help(client, query: CallbackQuery):
     module_name = query.data.split("_", 1)[1]
     try:
         module_data = HELP_DATA.get(module_name, {})
-        help_text = module_data.get("HELP", "Is module ka koi help nahi hai.")
-        buttons = [[InlineKeyboardButton("⬅️ Back to Laboratory", callback_data="open_help")]]
-        
-        full_text = f"🧪 <b>{module_name.upper()} Clinical Records:</b>\n\n{help_text}"
-        
+        help_text = module_data.get("HELP", "ɪs ᴍᴏᴅᴜʟᴇ ᴋᴀ ᴋᴏɪ ʜᴇʟᴘ ɴᴀʜɪ ʜᴀɪ.")
+        buttons = [[InlineKeyboardButton("⬅️ ʙᴀᴄᴋ ᴛᴏ ʟᴀʙᴏʀᴀᴛᴏʀʏ", callback_data="open_help")]]
+
+        full_text = f"🧪 <b>{module_name.upper()} ᴄʟɪɴɪᴄᴀʟ ʀᴇᴄᴏʀᴅs:</b>\n\n{help_text}"
+
         try:
             await query.message.edit_caption(
                 caption=full_text,
@@ -168,7 +166,7 @@ async def show_help(client, query: CallbackQuery):
                 parse_mode=enums.ParseMode.HTML
             )
     except Exception as e:
-        await query.answer("Antidote logs could not be loaded properly!")
+        await query.answer("ᴀɴᴛɪᴅᴏᴛᴇ ʟᴏɢs ᴄᴏᴜʟᴅ ɴᴏᴛ ʙᴇ ʟᴏᴀᴅᴇᴅ ᴘʀᴏᴘᴇʀʟʏ!")
 
 # 🔹 Back to Home
 @app.on_callback_query(filters.regex("^back_to_home$"))
