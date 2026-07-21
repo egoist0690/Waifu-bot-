@@ -26,25 +26,25 @@ async def generate_start_message(client, message):
     uptime = get_uptime()
 
     caption = (
-        f"🦋 <b>ᴀʀᴀ ᴀʀᴀ~ ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴛʜᴇ ʙᴜᴛᴛᴇʀғʟʏ ᴍᴀɴsɪᴏɴ!</b> 🌸\n\n"
+        f"<tg-emoji custom_emoji_id=\"5213273001205874214\">🌸</tg-emoji> <b>ᴀʀᴀ ᴀʀᴀ~ ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴛʜᴇ ʙᴜᴛᴛᴇʀғʟʏ ᴍᴀɴsɪᴏɴ!</b> <tg-emoji custom_emoji_id=\"5213273001205874214\">🌸</tg-emoji>\n\n"
         f"<i>ɪ ᴀᴍ {bot_name}. ɪᴛ sᴇᴇᴍs ʏᴏᴜ'ᴠᴇ ᴡᴀɴᴅᴇʀᴇᴅ sᴛʀᴀɪɢʜᴛ ɪɴᴛᴏ ᴍʏ ʟᴀʙᴏʀᴀᴛᴏʀʏ. ᴅᴏɴ'ᴛ ᴡᴏʀʀʏ, ᴛʜᴇ ғʀᴇsʜ ᴡɪsᴛᴇʀɪᴀ ғʀᴀɢʀᴀɴᴄᴇ ᴡɪʟʟ ᴋᴇᴇᴘ ʏᴏᴜ sᴀғᴇ ғʀᴏᴍ ᴀɴʏ ɴᴀsᴛʏ ᴅᴇᴍᴏɴs ʜᴇʀᴇ.</i>\n\n"
         f"<blockquote>━━━━━━━▧▣▧━━━━━━━\n"
-        f"⦾ <b>ᴍɪssɪᴏɴ:</b> ɪ ᴛʀᴀᴄᴋ ᴅᴏᴡɴ ʀᴏᴀᴍɪɴɢ sʟᴀʏᴇʀs ᴀɴᴅ ᴛʀᴀᴘ ᴡᴀɴᴅᴇʀɪɴɢ ᴅᴇᴍᴏɴs ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛs.\n"
-        f"⦾ <b>ᴛʀᴀɪɴɪɴɢ:</b> ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴀɴᴅ ᴜsᴇ /help ᴛᴏ ʀᴇᴀᴅ ᴍʏ ᴄᴜsᴛᴏᴍ ᴛʀᴀɪɴɪɴɢ ᴍᴀɴᴜᴀʟs.\n"
+        f"<tg-emoji custom_emoji_id=\"5213273001205874214\">⦾</tg-emoji> <b>ᴍɪssɪᴏɴ:</b> ɪ ᴛʀᴀᴄᴋ ᴅᴏᴡɴ ʀᴏᴀᴍɪɴɢ sʟᴀʏᴇʀs ᴀɴᴅ ᴛʀᴀᴘ ᴡᴀɴᴅᴇʀɪɴɢ ᴅᴇᴍᴏɴs ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛs.\n"
+        f"<tg-emoji custom_emoji_id=\"5213273001205874214\">⦾</tg-emoji> <b>ᴛʀᴀɪɴɪɴɢ:</b> ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴀɴᴅ ᴜsᴇ /help ᴛᴏ ʀᴇᴀᴅ ᴍʏ ᴄᴜsᴛᴏᴍ ᴛʀᴀɪɴɪɴɢ ᴍᴀɴᴜᴀʟs.\n"
         f"━━━━━━━▧▣▧━━━━━━━\n"
-        f"⚡ <b>ᴘᴜʟsᴇ:</b> {ping} ᴍs\n"
-        f"⏳ <b>ʀᴇsᴛ ᴢᴏɴᴇ:</b> {uptime}</blockquote>"
+        f"<tg-emoji custom_emoji_id=\"5213273001205874214\">⚡</tg-emoji> <b>ᴘᴜʟsᴇ:</b> <code>{ping}</code> ᴍs\n"
+        f"<tg-emoji custom_emoji_id=\"5213273001205874214\">⏳</tg-emoji> <b>ʀᴇsᴛ ᴢᴏɴᴇ:</b> <code>{uptime}</code></blockquote>"
     )
 
     buttons = [
-        [InlineKeyboardButton("🦋 ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", url=f"https://t.me/{bot_user.username}?startgroup=true")],
+        [InlineKeyboardButton("<tg-emoji custom_emoji_id=\"5213273001205874214\">🦋</tg-emoji> ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ", url=f"https://t.me/{bot_user.username}?startgroup=true")],
         [
-            InlineKeyboardButton("💜 sᴜᴘᴘᴏʀᴛ", url="https://t.me/+fPjchISAGnc3OGJl"),
-            InlineKeyboardButton("📢 ᴜᴘᴅᴀᴛᴇs", url="https://t.me/+wjJbHQ9DQzM1OTE1")
+            InlineKeyboardButton("<tg-emoji custom_emoji_id=\"5213273001205874214\">💜</tg-emoji> sᴜᴘᴘᴏʀᴛ", url="https://t.me/+fPjchISAGnc3OGJl"),
+            InlineKeyboardButton("<tg-emoji custom_emoji_id=\"5213273001205874214\">📢</tg-emoji> ᴜᴘᴅᴀᴛᴇs", url="https://t.me/+wjJbHQ9DQzM1OTE1")
         ],
         [
-            InlineKeyboardButton("🧪 ʜᴇʟᴘ", callback_data="open_help"),
-            InlineKeyboardButton("👤 ᴏᴡɴᴇʀ", url=f"https://t.me/EGOIST_6969")
+            InlineKeyboardButton("<tg-emoji custom_emoji_id=\"5213273001205874214\">🧪</tg-emoji> ʜᴇʟᴘ", callback_data="open_help"),
+            InlineKeyboardButton("<tg-emoji custom_emoji_id=\"5213273001205874214\">👤</tg-emoji> ᴏᴡɴᴇʀ", url=f"https://t.me/EGOIST_6969")
         ]
     ]
 
@@ -54,14 +54,14 @@ async def generate_start_message(client, message):
 async def generate_group_start_message(client):
     bot_user = await client.get_me()
     caption = (
-        f"🦋 <i>ғʟᴀᴘ, ғʟᴀᴘ... ɪ ᴀᴍ</i> <b>{bot_user.first_name}</b> 🌸\n\n"
+        f"<tg-emoji custom_emoji_id=\"5213273001205874214\">🦋</tg-emoji> <i>ғʟᴀᴘ, ғʟᴀᴘ... ɪ ᴀᴍ</i> <b>{bot_user.first_name}</b> <tg-emoji custom_emoji_id=\"5213273001205874214\">🌸</tg-emoji>\n\n"
         f"<blockquote>ɪ ᴀᴍ ᴄᴜʀʀᴇɴᴛʟʏ ᴍᴏɴɪᴛᴏʀɪɴɢ ᴛʜɪs ᴄʜᴀᴛ ᴀʀᴇᴀ ᴛᴏ ᴅᴇᴛᴇᴄᴛ ᴀɴᴅ ᴇxᴘᴏsᴇ ʜɪᴅᴅᴇɴ ᴅᴇᴍᴏɴs ᴛʜʀᴏᴜɢʜ ᴍᴇssᴀɢᴇ ғʟᴏᴡs.\n\n"
         f"ᴜsᴇ /help ᴛᴏ ᴀᴄᴄᴇss ᴍʏ sᴘᴇᴄɪᴀʟɪᴢᴇᴅ ᴍᴇᴅɪᴄᴀʟ ᴀɴᴅ ᴄᴏᴍʙᴀᴛ ᴍᴀɴᴜᴀʟs!</blockquote>"
     )
     buttons = [
         [
-            InlineKeyboardButton("💜 sᴜᴘᴘᴏʀᴛ", url="https://t.me/+fPjchISAGnc3OGJl"),
-            InlineKeyboardButton("📢 ᴜᴘᴅᴀᴛᴇs", url="https://t.me/+wjJbHQ9DQzM1OTE1")
+            InlineKeyboardButton("<tg-emoji custom_emoji_id=\"5213273001205874214\">💜</tg-emoji> sᴜᴘᴘᴏʀᴛ", url="https://t.me/+fPjchISAGnc3OGJl"),
+            InlineKeyboardButton("<tg-emoji custom_emoji_id=\"5213273001205874214\">📢</tg-emoji> ᴜᴘᴅᴀᴛᴇs", url="https://t.me/+wjJbHQ9DQzM1OTE1")
         ]
     ]
     return caption, buttons
@@ -112,20 +112,26 @@ def find_help_modules():
     buttons = []
     for module_name, module_data in HELP_DATA.items():
         button_name = module_data.get("HELP_NAME", "ᴜɴᴋɴᴏᴡɴ")
-        buttons.append(InlineKeyboardButton(button_name, callback_data=f"help_{module_name}"))
-    return [buttons[i : i + 3] for i in range(0, len(buttons), 3)]
+        buttons.append(InlineKeyboardButton(
+            f"<tg-emoji custom_emoji_id=\"5213273001205874214\">📋</tg-emoji> {button_name}",
+            callback_data=f"help_{module_name}"
+        ))
+    return [buttons[i : i + 2] for i in range(0, len(buttons), 2)]  # Changed to 2 columns for better balance
 
 # 🔹 Help Button Click Handler (Shinobu Custom Design)
 @app.on_callback_query(filters.regex("^open_help$"))
 async def show_help_menu(client, query: CallbackQuery):
     time.sleep(1)
     buttons = find_help_modules()
-    buttons.append([InlineKeyboardButton("⬅️ ʀᴇᴛᴜʀɴ ᴛᴏ ᴍᴀɴsɪᴏɴ", callback_data="back_to_home")])
+    buttons.append([InlineKeyboardButton(
+        "<tg-emoji custom_emoji_id=\"5213273001205874214\">⬅️</tg-emoji> ʀᴇᴛᴜʀɴ ᴛᴏ ᴍᴀɴsɪᴏɴ",
+        callback_data="back_to_home"
+    )])
 
     text = (
-        "⚙️ <b>🦋 ʙᴜᴛᴛᴇʀғʟʏ ᴍᴀɴsɪᴏɴ ʜᴇʟᴘ ᴍᴇɴᴜ</b>\n\n"
+        "<tg-emoji custom_emoji_id=\"5213273001205874214\">⚙️</tg-emoji> <b>🦋 ʙᴜᴛᴛᴇʀғʟʏ ᴍᴀɴsɪᴏɴ ʜᴇʟᴘ ᴍᴇɴᴜ</b>\n\n"
         "<blockquote>sᴇʟᴇᴄᴛ ᴀ ᴛᴀʀɢᴇᴛ ᴅɪʀᴇᴄᴛᴏʀʏ ʙᴇʟᴏᴡ ᴛᴏ ʀᴇᴀᴅ ᴏᴜʀ ᴇxᴇᴄᴜᴛɪᴏɴ ᴍᴀɴᴜᴀʟs ᴀɴᴅ ᴛʀᴇᴀᴛᴍᴇɴᴛ ɢᴜɪᴅᴇs.\n\n"
-        "ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ɪɴsɪᴅᴇ ᴍᴜsᴛ ʙᴇ ᴅᴇᴘʟᴏʏᴇᴅ ᴜsɪɴɢ ᴛʜᴇ ᴘʀᴇғɪx sʏᴍʙᴏʟ: /</blockquote>"
+        "ᴀʟʟ ᴄᴏᴍᴍᴀɴᴅs ɪɴsɪᴅᴇ ᴍᴜsᴛ ʙᴇ ᴅᴇᴘʟᴏʏᴇᴅ ᴜsɪɴɢ ᴛʜᴇ ᴘʀᴇғɪx sʏᴍʙᴏʟ: <code>/</code></blockquote>"
     )
 
     try:
@@ -149,9 +155,15 @@ async def show_help(client, query: CallbackQuery):
     try:
         module_data = HELP_DATA.get(module_name, {})
         help_text = module_data.get("HELP", "ɪs ᴍᴏᴅᴜʟᴇ ᴋᴀ ᴋᴏɪ ʜᴇʟᴘ ɴᴀʜɪ ʜᴀɪ.")
-        buttons = [[InlineKeyboardButton("⬅️ ʙᴀᴄᴋ ᴛᴏ ʟᴀʙᴏʀᴀᴛᴏʀʏ", callback_data="open_help")]]
+        buttons = [[InlineKeyboardButton(
+            "<tg-emoji custom_emoji_id=\"5213273001205874214\">⬅️</tg-emoji> ʙᴀᴄᴋ ᴛᴏ ʟᴀʙᴏʀᴀᴛᴏʀʏ",
+            callback_data="open_help"
+        )]]
 
-        full_text = f"🧪 <b>{module_name.upper()} ᴄʟɪɴɪᴄᴀʟ ʀᴇᴄᴏʀᴅs:</b>\n\n{help_text}"
+        full_text = (
+            f"<tg-emoji custom_emoji_id=\"5213273001205874214\">🧪</tg-emoji> <b>{module_name.upper()} ᴄʟɪɴɪᴄᴀʟ ʀᴇᴄᴏʀᴅs:</b>\n\n"
+            f"<blockquote>{help_text}</blockquote>"
+        )
 
         try:
             await query.message.edit_caption(
