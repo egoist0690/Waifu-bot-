@@ -1,7 +1,4 @@
-# ==========================================
-# Creator: MrZyro
-# Telegram: @MrZyro_dev
-# GitHub: https://github.com/MrZyro
+
 # ==========================================
 
 from TEAMZYRO import *
@@ -34,6 +31,10 @@ async def check_support_channel(client: Client, user_id: int) -> bool:
     except Exception as e:
         print(f"Error checking support channel membership: {e}")
         return False
+
+# ... rest of harem.py code remains the same ...
+
+# The rarity_map2 is imported from zyro_rarity.py which now has updated values
 
 
 async def fetch_user_characters(user_id):
