@@ -1,7 +1,4 @@
-# ==========================================
-# Creator: MrZyro
-# Telegram: @MrZyro_dev
-# GitHub: https://github.com/MrZyro
+
 # ==========================================
 
 from TEAMZYRO import *
@@ -20,25 +17,24 @@ async def delete_message(chat_id, message_id, context):
         print(f"Error deleting message: {e}")
 
 RARITY_WEIGHTS = {
-    "⚪️ Common": (40, True),             # Most frequent
+    "⚪️ Common": (35, True),             # Most frequent
     "🟣 Rare": (20, True),               # Less frequent than Common
+    "🟢 Medium": (15, True),             # Balanced medium rarity
     "🟡 Legendary": (12, True),          # Rare but obtainable
-    "🟢 Medium": (10, True),             # Less common than Rare
     "💮 Special Edition": (8, True),     # Very rare
     "🔮 Limited Edition": (6, True),     # Extremely rare
-    "💸 Premium Edition": (4, True),     # Ultra-rare
+    "💸 Premium": (4, True),             # Ultra-rare
     "🌤 Summer": (3, False),             # Seasonal rarity
-    "🎐 Celestial": (2.5, True),         # Cosmic themed rarity
-    "❄️ Winter": (2, False),             # Winter themed rarity
-    "💝 Valentine": (2, False),          # Valentine's rarity
-    "🎃 Halloween": (1.8, False),        # Halloween themed rarity
-    "🎄 Christmas Special": (1.5, False),# Christmas themed rarity
-    "🪐 Omniversal": (1.2, True),        # Very rare cosmic rarity
-    "🎭 Cosplay Master 🎭": (1, True),   # Exclusive cosplay edition
-    "🧧 Events": (0.8, False),           # Limited-time event rarity
-    "🍑 Echhi": (0.6, True),             # Adult-themed rarity
-    "🎗️ AMV Edition": (0.5, False),     # AMV special rarity
-    "🌧 Rainy": (2.0, False),            # Rainy event rarity
+    "🎐 Enchanted": (2.5, True),         # Enchanted themed rarity
+    "❄️ Frozen": (2, False),             # Winter themed rarity
+    "💝 Romantic": (2, False),           # Romantic rarity
+    "🎃 Haunted": (1.8, False),          # Halloween themed rarity
+    "🎄 Christmas": (1.5, False),        # Christmas themed rarity
+    "🧧 Festive": (1.2, False),          # Festive themed rarity
+    "🍑 Naughty": (1, True),             # Adult-themed rarity
+    "🎗️ AMV": (0.8, False),              # AMV special rarity
+    "🌧 Cloudy": (0.6, False),           # Cloudy event rarity
+    "🦠 Mythgard": (0.5, True),          # Mythical rarity
 }
 
 
