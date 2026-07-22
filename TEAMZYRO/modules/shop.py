@@ -1,19 +1,16 @@
-# ==========================================
-# Creator: MrZyro
-# Telegram: @MrZyro_dev
-# GitHub: https://github.com/MrZyro
+
 # ==========================================
 
 import random
 from datetime import datetime, timedelta
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto, InputMediaVideo
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bson import ObjectId
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 from TEAMZYRO import *
 
 user_shop_state = {}
-DEFAULT_DISCOUNT = 12
+DEFAULT_DISCOUNT = 9
 
 # ==========================================
 # RARITY PRICE STRUCTURE (Shinobu Themed)
@@ -22,88 +19,90 @@ DEFAULT_DISCOUNT = 12
 RARITY_PRICE = {
     "⚪️ Common": 1_000,           # 1K - Common garden spirits
     "🟣 Rare": 5_000,              # 5K - Rare butterflies
-    "🟡 Legendary": 15_000,        # 15K - Legendary souls
-    "🟢 Medium": 30_000,           # 30K - Medium-rank spirits
+    "🟢 Medium": 15_000,           # 15K - Medium-rank spirits
+    "🟡 Legendary": 30_000,        # 30K - Legendary souls
     "💮 Special Edition": 50_000,  # 50K - Special blooms
     "🔮 Limited Edition": 75_000,  # 75K - Limited treasures
-    "💸 Premium Edition": 120_000, # 120K - Premium garden guests 🌸
-    "🌤 Summer": 20_000,           # 20K - Summer spirits
-    "🎐 Celestial": 80_000,        # 80K - Celestial beings
-    "❄️ Winter": 25_000,           # 25K - Winter souls
-    "💝 Valentine": 35_000,        # 35K - Valentine's spirits
-    "🎃 Halloween": 40_000,        # 40K - Halloween guests
-    "🎄 Christmas Special": 45_000,# 45K - Christmas spirits
-    "🧧 Events": 55_000,           # 55K - Event exclusives
-    "🍑 Echhi": 60_000,            # 60K - Eccentric spirits
-    "🎗️ AMV Edition": 70_000,      # 70K - AMV collectors
-    "🌧 Rainy": 25_000,            # 25K - Rainy day spirits
-    "🫧 Aquatic": 65_000,          # 65K - Aquatic spirits 🌊
+    "💸 Premium": 200_000,         # 120K - Premium garden guests 🌸
+    "🌤 Summer": 80_000,           # 25K - Summer spirits
+    "🎐 Enchanted": 75_000,        # 45K - Enchanted beings
+    "❄️ Frozen": 80_000,          # 40K - Frozen souls
+    "💝 Romantic": 85_000,         # 35K - Romantic spirits
+    "🎃 Haunted": 75_000,          # 55K - Haunted entities
+    "🎄 Christmas": 70_000,        # 60K - Christmas spirits
+    "🧧 Festive": 100_000,          # 45K - Festive guests
+    "🍑 Naughty": 100_000,          # 65K - Naughty spirits
+    "🎗️ AMV": 200_000,             # 20K - AMV edition
+    "🌧 Cloudy": 80_000,           # 30K - Cloudy spirits
+    "🦠 Mythgard": 500_000,        # 100K - Mythical beings
 }
 
 RARITY_EMOJIS = {
     "⚪️ Common": "⚪️",
     "🟣 Rare": "🟣",
-    "🟡 Legendary": "🟡",
     "🟢 Medium": "🟢",
+    "🟡 Legendary": "🟡",
     "💮 Special Edition": "💮",
     "🔮 Limited Edition": "🔮",
-    "💸 Premium Edition": "💸",
+    "💸 Premium": "💸",
     "🌤 Summer": "🌤",
-    "🎐 Celestial": "🎐",
-    "❄️ Winter": "❄️",
-    "💝 Valentine": "💝",
-    "🎃 Halloween": "🎃",
-    "🎄 Christmas Special": "🎄",
-    "🧧 Events": "🧧",
-    "🍑 Echhi": "🍑",
-    "🎗️ AMV Edition": "🎗️",
-    "🌧 Rainy": "🌧",
-    "🫧 Aquatic": "🫧",
+    "🎐 Enchanted": "🎐",
+    "❄️ Frozen": "❄️",
+    "💝 Romantic": "💝",
+    "🎃 Haunted": "🎃",
+    "🎄 Christmas": "🎄",
+    "🧧 Festive": "🧧",
+    "🍑 Naughty": "🍑",
+    "🎗️ AMV": "🎗️",
+    "🌧 Cloudy": "🌧",
+    "🦠 Mythgard": "🦠",
 }
 
-# Shinobu's elegant rarity descriptions
+# Elegant rarity descriptions
 RARITY_DESCRIPTIONS = {
     "⚪️ Common": "A gentle spirit that blooms in every garden—simple, yet charming.",
     "🟣 Rare": "A butterfly with a delicate hue—not easily found, but worth the search.",
-    "🟡 Legendary": "A soul that echoes through time—legendary tales are woven around them.",
     "🟢 Medium": "Neither common nor rare—a balanced spirit with quiet strength.",
+    "🟡 Legendary": "A soul that echoes through time—legendary tales are woven around them.",
     "💮 Special Edition": "A rare bloom that appears only during special seasons—cherish it.",
     "🔮 Limited Edition": "A treasure from beyond the veil—once it's gone, it's gone forever.",
-    "💸 Premium Edition": "The crown jewel of the garden—only the most dedicated collectors may obtain this spirit.",
-    "🌤 Summer": "A warm soul that basks in the golden sunlight—radiant and full of life.",
-    "🎐 Celestial": "A being from the stars above—ethereal and touched by cosmic beauty.",
-    "❄️ Winter": "A frost-kissed spirit with a calm, serene presence—cold yet captivating.",
-    "💝 Valentine": "A heart-shaped soul that radiates love and affection—perfect for romantics.",
-    "🎃 Halloween": "A mischievous spirit that appears during the witching hour—playful and eerie.",
-    "🎄 Christmas Special": "A festive soul that brings holiday cheer—wrapped in warmth and joy.",
-    "🧧 Events": "A rare spirit that only appears during special celebrations—cherish the moment.",
-    "🍑 Echhi": "A cheeky, eccentric spirit with a playful demeanor—unpredictable but lovable.",
-    "🎗️ AMV Edition": "A collectible spirit for true connoisseurs—admired for its artistic essence.",
-    "🌧 Rainy": "A melancholy soul that weeps with the clouds—poetic and introspective.",
-    "🫧 Aquatic": "A shimmering spirit from the deep—fluid, graceful, and full of mystery. 🌊",
+    "💸 Premium": "The crown jewel of the garden—only the most dedicated collectors may obtain this spirit.",
+    "🌤 Summer": "A radiant spirit born from the summer sun's warm embrace.",
+    "🎐 Enchanted": "A mystical being touched by ancient magic and wonder.",
+    "❄️ Frozen": "A spirit preserved in eternal winter's icy beauty.",
+    "💝 Romantic": "A soul filled with love and passion—perfect for Valentine's Day.",
+    "🎃 Haunted": "A mysterious entity from the shadowy realm of Halloween.",
+    "🎄 Christmas": "A festive spirit spreading joy and holiday cheer.",
+    "🧧 Festive": "A celebration spirit that brings good fortune and happiness.",
+    "🍑 Naughty": "A cheeky spirit with a mischievous glint in their eye.",
+    "🎗️ AMV": "A dynamic spirit full of energy and rhythm.",
+    "🌧 Cloudy": "A melancholic spirit that brings gentle rain and reflection.",
+    "🦠 Mythgard": "A legendary being from the mythical realms of old.",
 }
 
-# ---------------- RARITY ORDER FOR DISPLAY ---------------- #
-
+# RARITY ORDER FOR DISPLAY
 RARITY_ORDER = [
     "⚪️ Common",
     "🟣 Rare",
-    "🟡 Legendary",
     "🟢 Medium",
+    "🟡 Legendary",
     "💮 Special Edition",
     "🔮 Limited Edition",
-    "💸 Premium Edition",
+    "💸 Premium",
     "🌤 Summer",
-    "🎐 Celestial",
-    "❄️ Winter",
-    "💝 Valentine",
-    "🎃 Halloween",
-    "🎄 Christmas Special",
-    "🧧 Events",
-    "🍑 Echhi",
-    "🎗️ AMV Edition",
-    "🌧 Rainy",
-    "🫧 Aquatic",
+    "🎐 Enchanted",
+    "❄️ Frozen",
+    "💝 Romantic",
+    "🎃 Haunted",
+    "🎄 Christmas",
+    "🧧 Festive",
+    "🍑 Naughty",
+    "🎗️ AMV",
+    "🌧 Cloudy",
+    "🦠 Mythgard",
+]
+
+# ... rest of shop.py remains the same ...,
 ]
 
 # Premium rarity only for shop
