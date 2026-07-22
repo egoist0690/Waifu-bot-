@@ -103,7 +103,6 @@ RARITY_ORDER = [
 ]
 
 # ... rest of shop.py remains the same ...,
-]
 
 # Premium rarity only for shop
 PREMIUM_RARITY = "💸 Premium Edition"
