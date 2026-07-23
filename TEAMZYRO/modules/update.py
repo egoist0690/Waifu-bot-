@@ -186,4 +186,3 @@ async def update_multiple(client: Client, message: Message):
 
     except Exception as e:
         await message.reply_text(f'Error: {str(e)}')
-
