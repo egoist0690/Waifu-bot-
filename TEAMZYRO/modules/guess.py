@@ -125,16 +125,18 @@ async def guess(client: Client, message: Message):
 
         keyboard = [[InlineKeyboardButton("🌸 View Your Butterfly Garden", switch_inline_query_current_chat=f"collection.{user_id}")]]
         
+        # Updated success message with vertical format inside blockquote
         await message.reply_text(
-            f'🌸 *My, my! What an exquisite capture~* ✨\n\n'
+            f'🌸 <i>My, my! What an exquisite capture~</i> ✨\n\n'
             f'Congratulations <b><a href="tg://user?id={user_id}">{escape(message.from_user.first_name)}</a></b>, you\'ve successfully guided a spirit home! 🦋\n\n'
-            f'<blockquote>📛 <b>Name:</b> {last_characters[chat_id]["name"]}\n'
-            f'🌈 <b>Anime:</b> {last_characters[chat_id]["anime"]}\n'
-            f'✨ <b>Rarity:</b> {last_characters[chat_id]["rarity"]}\n\n'
-            f'⏱️ <b>Time to Capture:</b> {time_taken_str}\n'
-            f'🌸 <b>Wisteria Petals Earned:</b> +40\n'
-            f'💳 <b>Total Petals:</b> {new_balance}\n\n'
-            f'This soul has been gently placed in your garden. Use /harem to admire your collection.</blockquote>',
+            f'<blockquote>🍷 𝐍꯭𝛂꯭ᴍ꯭є꯭   ↬ {last_characters[chat_id]["name"]}\n'
+            f'🌟 ⃪꯭𝚨꯭꯭𝛈꯭꯭𝛊꯭꯭ᴍ꯭꯭ᥱ꯭꯭꯭   ↬ {last_characters[chat_id]["anime"]}\n'
+            f'💫 𝐑꯭𝛂꯭я꯭ι꯭τ꯭𝗬꯭꯭   ↬ {last_characters[chat_id]["rarity"]}\n'
+            f'⏳ ⃪꯭T꯭꯭𝛊꯭꯭ᴍ꯭꯭ᥱ꯭꯭   ↬ {time_taken_str}\n'
+            f'✨ E꯭𝛂꯭я꯭η꯭є꯭∂꯭ 𝐖꯭ι꯭𐑈꯭τ꯭є꯭я꯭ι꯭𝛂꯭ P꯭є꯭τ꯭𝛂꯭ℓ꯭𐑈꯭   ↬ +40\n'
+            f'💰 T꯭ⱺ꯭τ꯭𝛂꯭ℓ꯭ P꯭є꯭τ꯭𝛂꯭ℓ꯭𐑈꯭   ↬ {new_balance}\n\n'
+            f'𝑻𝒉𝒊𝒔 𝒔𝒐𝒖𝒍 𝒉𝒂𝒔 𝒃𝒆𝒆𝒏 𝒈𝒆𝒏𝒕𝒍𝒚 𝒑𝒍𝒂𝒄𝒆𝒅 𝒊𝒏 𝒚𝒐𝒖𝒓 𝒈𝒂𝒓𝒅𝒆𝒏.\n'
+            f'𝑼𝒔𝒆 /harem 𝒕𝒐 𝒂𝒅𝒎𝒊𝒓𝒆 𝒚𝒐𝒖𝒓 𝒄𝒐𝒍𝒍𝒆𝒄𝒕𝒊𝒐𝒏.</blockquote>',
             parse_mode=enums.ParseMode.HTML,
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
