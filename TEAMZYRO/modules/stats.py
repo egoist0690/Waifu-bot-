@@ -1,7 +1,4 @@
-# ==========================================
-# Creator: MrZyro
-# Telegram: @MrZyro_dev
-# GitHub: https://github.com/MrZyro
+
 # ==========================================
 
 from pyrogram import Client, filters
@@ -80,25 +77,44 @@ async def stats_handler(client: Client, message: Message):
         await processing_message.edit_caption(caption=error, parse_mode=enums.ParseMode.HTML)
         return
     
-    # Build the stats caption
+    # Get rarity counts
+    rarity_counts = stats['rarity_counts']
+    
+    # Build the stats caption with Shinobu theme
     stats_message = (
-        f"❖ 【ＺＹＲＯ】{stats['first_name']} ɪɴғᴏʀᴍᴀᴛɪᴏɴ ❖\n"
-        f"━━━━━━━━━━━━━━━━━━━━━\n"
-        f"⬤ ᴜsᴇʀ ɪᴅ ➥ {stats['user_id']}\n"
-        f"⬤ ᴍᴇɴᴛɪᴏɴ ➥ {stats['first_name']}\n"
-        f"⬤ ᴄᴏɪɴ ➥ {stats['balance']}\n"
-        f"⬤ ᴄᴏʟʟᴇᴄᴛɪᴏɴ ➥ {stats['character_count']}/{stats['total_characters']} (total)\n"
-        f"⬤ ᴘʀᴏɢʀᴇss ʙᴀʀ ➥ [{stats['progress_bar']} {stats['progress_percentage']:.2f}%]\n"
-        f"⬤ ɢʟᴏʙᴀʟ ʀᴀɴᴋ ➥ {stats['rank']}/{stats['total_users']}\n"
-        f"⬤ ʀᴀʀɪᴛʏ ᴄᴏᴜɴᴛ ➥\n"
+        f"🦋 <b>𝐒꯭𝒉꯭𝛊꯭𝒏꯭𝒐꯭𝒃꯭𝒖 𝐆𝐚𝐫𝐝𝐞𝐧</b>\n"
+        f"━━━━━━━━━━━━━━━━━━\n\n"
+        f"👤 <b>𝐍𝐚𝐦𝐞</b>        ↬ {stats['first_name']}\n"
+        f"🆔 <b>𝐔𝐬𝐞𝐫 𝐈𝐃</b>     ↬ {stats['user_id']}\n\n"
+        f"🌸 <b>𝐖𝐢𝐬𝐭𝐞𝐫𝐢𝐚 𝐏𝐞𝐭𝐚𝐥𝐬</b> ↬ {stats['balance']}\n"
+        f"🦋 <b>𝐂𝐨𝐥𝐥𝐞𝐜𝐭𝐢𝐨𝐧</b>      ↬ {stats['character_count']}/{stats['total_characters']}\n"
+        f"🏆 <b>𝐆𝐥𝐨𝐛𝐚𝐥 𝐑𝐚𝐧𝐤</b>     ↬ #{stats['rank']}\n\n"
+        f"📈 <b>𝐂𝐨𝐦𝐩𝐥𝐞𝐭𝐢𝐨𝐧</b> ↬ {stats['progress_bar']} {stats['progress_percentage']:.1f}%\n"
+        f"━━━━━━━━━━━━━━━━━━\n\n"
+        f"⚪ <b>Common</b>              ↬ {rarity_counts.get('Common', 0)}\n"
+        f"🟢 <b>Medium</b>              ↬ {rarity_counts.get('Medium', 0)}\n"
+        f"🟣 <b>Rare</b>                ↬ {rarity_counts.get('Rare', 0)}\n"
+        f"🟡 <b>Legendary</b>           ↬ {rarity_counts.get('Legendary', 0)}\n"
+        f"💮 <b>Special Edition</b>     ↬ {rarity_counts.get('Special Edition', 0)}\n"
+        f"🔮 <b>Limited Edition</b>     ↬ {rarity_counts.get('Limited Edition', 0)}\n"
+        f"💸 <b>Premium Edition</b>     ↬ {rarity_counts.get('Premium Edition', 0)}\n"
+        f"🌤 <b>Summer</b>              ↬ {rarity_counts.get('Summer', 0)}\n"
+        f"🎐 <b>Enchanted</b>          ↬ {rarity_counts.get('Enchanted', 0)}\n"
+        f"❄ <b>Frozen</b>             ↬ {rarity_counts.get('Frozen', 0)}\n"
+        f"💝 <b>Romance</b>           ↬ {rarity_counts.get('Romance', 0)}\n"
+        f"🎃 <b>Haunted</b>          ↬ {rarity_counts.get('Haunted', 0)}\n"
+        f"🎄 <b>Chrimsum</b>  ↬ {rarity_counts.get('Chrimsum', 0)}\n"
+        f"🧧 <b>Festive</b>              ↬ {rarity_counts.get('Festive', 0)}\n"
+        f"🍑 <b>Naughty</b>               ↬ {rarity_counts.get('Naughty', 0)}\n"
+        f"🎗 <b>AMV</b>            ↬ {rarity_counts.get('AMV', 0)}\n"
+        f"🌧 <b>Rainy</b>               ↬ {rarity_counts.get('Rainy', 0)}\n"
+        f"🦠 <b>Mythgard</b>         ↬ {rarity_counts.get('Mythgard', 0)}\n"
+        f"━━━━━━━━━━━━━━━━━━\n\n"
+        f"🌸\n"
+        f"<i>\"Every butterfly eventually finds\n"
+        f"its place beneath the wisteria.\"</i>\n\n"
+        f"💜 <b>Shinobu Kocho</b>"
     )
-    
-    # Add rarity counts
-    for rarity, count in stats['rarity_counts'].items():
-        emoji = rarity_map2.get(rarity, '❍')
-        stats_message += f"  ❍ {rarity} ➥ {count}\n"
-    
-    stats_message += "━━━━━━━━━━━━━━━━━━━━━"
     
     # Edit the processing message with the final stats
     await processing_message.edit_caption(
