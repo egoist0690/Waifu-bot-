@@ -1,4 +1,7 @@
-
+# ==========================================
+# Creator: MrZyro
+# Telegram: @MrZyro_dev
+# GitHub: https://github.com/MrZyro
 # ==========================================
 
 rarity_map = {
@@ -8,16 +11,16 @@ rarity_map = {
     4: "🟡 Legendary",
     5: "💮 Special Edition",
     6: "🔮 Limited Edition",
-    7: "💸 Premium",
+    7: "💸 Premium Edition",
     8: "🌤 Summer",
     9: "🎐 Enchanted",
     10: "❄️ Frozen",
     11: "💝 Romantic",
     12: "🎃 Haunted",
-    13: "🎄 Christmas",
+    13: "🎄 Chrimsum",
     14: "🧧 Festive",
     15: "🍑 Naughty",
-    16: "🎗️ AMV",
+    16: "🎗️ AMV Edition",
     17: "🌧 Cloudy",
     18: "🦠 Mythgard",
 }
@@ -30,16 +33,16 @@ RARITY_NAMES = [
     "🟡 Legendary",
     "💮 Special Edition",
     "🔮 Limited Edition",
-    "💸 Premium",
+    "💸 Premium Edition",
     "🌤 Summer",
     "🎐 Enchanted",
     "❄️ Frozen",
     "💝 Romantic",
     "🎃 Haunted",
-    "🎄 Christmas",
+    "🎄 Chrimsum",
     "🧧 Festive",
     "🍑 Naughty",
-    "🎗️ AMV",
+    "🎗️ AMV Edition",
     "🌧 Cloudy",
     "🦠 Mythgard",
 ]
@@ -52,16 +55,16 @@ rarity_map2 = {
     "🟡 Legendary": "🟡",
     "💮 Special Edition": "💮",
     "🔮 Limited Edition": "🔮",
-    "💸 Premium": "💸",
+    "💸 Premium Edition": "💸",
     "🌤 Summer": "🌤",
     "🎐 Enchanted": "🎐",
     "❄️ Frozen": "❄️",
     "💝 Romantic": "💝",
     "🎃 Haunted": "🎃",
-    "🎄 Christmas": "🎄",
+    "🎄 Chrimsum": "🎄",
     "🧧 Festive": "🧧",
     "🍑 Naughty": "🍑",
-    "🎗️ AMV": "🎗️",
+    "🎗️ AMV Edition": "🎗️",
     "🌧 Cloudy": "🌧",
     "🦠 Mythgard": "🦠",
 }
