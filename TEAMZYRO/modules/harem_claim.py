@@ -10,6 +10,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime, timedelta
 from TEAMZYRO import ZYRO as bot
 from TEAMZYRO import user_collection, collection, user_nguess_progress, user_guess_progress, FORCE_JOIN as chat, FORCE_JOIN_LINK
+from html import escape
 
 claim_lock = {}
 
@@ -59,7 +60,7 @@ async def mclaim(_, message: t.Message):
         if str(message.chat.id) != str(chat):
             join_button = InlineKeyboardMarkup([[InlineKeyboardButton("🌸 Join the Wisteria Garden", url=FORCE_JOIN_LINK)]])
             return await message.reply_text(
-                "🌸 <b>𝐖꯭𝐢꯭𝐬꯭𝐭꯭𝐞꯭𝐫꯭𝐢꯭𝐚 𝐆꯭𝐚꯭𝐭꯭𝐞</b>\n\n"
+                "🌸 <b>𝐖𝐢𝐬𝐭𝐞𝐫𝐢𝐚 𝐆𝐚𝐭𝐞</b>\n\n"
                 "<blockquote>Before you can receive your daily blessing, you must first enter the wisteria garden!</blockquote>",
                 reply_markup=join_button,
                 parse_mode=enums.ParseMode.HTML
@@ -85,7 +86,7 @@ async def mclaim(_, message: t.Message):
             
             # Cooldown message with Shinobu theme
             return await message.reply_text(
-                f"🌸 <b>𝐖꯭𝐢꯭𝐬꯭𝐭꯭𝐞꯭𝐫꯭𝐢꯭𝐚 𝐑꯭𝐞꯭𝐬꯭𝐭</b>\n"
+                f"🌸 <b>𝐖𝐢𝐬𝐭𝐞𝐫𝐢𝐚 𝐑𝐞𝐬𝐭</b>\n"
                 f"━━━━━━━━━━━━━━━━━━\n\n"
                 f"🦋 The butterflies are still gathering nectar.\n\n"
                 f"⏳ <b>Remaining Time</b> ↬ {formatted_time}\n\n"
@@ -109,21 +110,31 @@ async def mclaim(_, message: t.Message):
             {'$push': {'characters': {'$each': unique_characters}}, '$set': {'last_daily_reward': datetime.utcnow()}}
         )
 
+        # Get updated balance after update
+        user_data = await user_collection.find_one({'id': user_id})
+        balance = user_data.get('balance', 0)
+        reward_amount = 5  # Daily reward amount
+        
+        # Update balance
+        await user_collection.update_one(
+            {'id': user_id},
+            {'$inc': {'balance': reward_amount}}
+        )
+        
+        # Get final balance
+        user_data = await user_collection.find_one({'id': user_id})
+        final_balance = user_data.get('balance', 0)
+
         # Send the character's image and info with Shinobu theme
         for character in unique_characters:
-            # Get updated balance
-            user_data = await user_collection.find_one({'id': user_id})
-            balance = user_data.get('balance', 0)
-            reward_amount = 5  # Daily reward amount
-            
             await message.reply_photo(
                 photo=character['img_url'],
                 caption=(
-                    f"🌸 <b>𝐖꯭𝐢꯭𝐬꯭𝐭꯭𝐞꯭𝐫꯭𝐢꯭𝐚 𝐁꯭𝐥꯭𝐞꯭𝐬꯭𝐬꯭𝐢꯭𝐧꯭𝐠</b>\n"
+                    f"🌸 <b>𝐖𝐢𝐬𝐭𝐞𝐫𝐢𝐚 𝐁𝐥𝐞𝐬𝐬𝐢𝐧𝐠</b>\n"
                     f"━━━━━━━━━━━━━━━━━━\n\n"
-                    f"👤 <b>𝐇𝐚𝐬𝐡𝐢𝐫𝐚</b> ↬ {message.from_user.mention}\n"
+                    f"👤 <b>𝐇𝐚𝐬𝐡𝐢𝐫𝐚</b> ↬ <a href='tg://user?id={user_id}'>{escape(message.from_user.first_name)}</a>\n"
                     f"🌸 <b>𝐏𝐞𝐭𝐚𝐥𝐬 𝐄𝐚𝐫𝐧𝐞𝐝</b> ↬ +{reward_amount}\n"
-                    f"💰 <b>𝐓𝐨𝐭𝐚𝐥 𝐏𝐞𝐭𝐚𝐥𝐬</b> ↬ {balance + reward_amount}\n"
+                    f"💰 <b>𝐓𝐨𝐭𝐚𝐥 𝐏𝐞𝐭𝐚𝐥𝐬</b> ↬ {final_balance}\n"
                     f"🕒 <b>𝐍𝐞𝐱𝐭 𝐁𝐥𝐞𝐬𝐬𝐢𝐧𝐠</b> ↬ 24h\n\n"
                     f"━━━━━━━━━━━━━━━━━━\n\n"
                     f"🦋\n"
@@ -132,9 +143,9 @@ async def mclaim(_, message: t.Message):
                     f"💜 <b>Shinobu Kocho</b>\n\n"
                     f"━━━━━━━━━━━━━━━━━━\n"
                     f"✨ <b>New Butterfly Arrived!</b>\n"
-                    f"📛 <b>Name:</b> {character['name']}\n"
-                    f"🌈 <b>Rarity:</b> {character['rarity']}\n"
-                    f"⛩️ <b>Anime:</b> {character['anime']}"
+                    f"📛 <b>Name:</b> {escape(character['name'])}\n"
+                    f"🌈 <b>Rarity:</b> {escape(character['rarity'])}\n"
+                    f"⛩️ <b>Anime:</b> {escape(character['anime'])}"
                 ),
                 parse_mode=enums.ParseMode.HTML
             )
